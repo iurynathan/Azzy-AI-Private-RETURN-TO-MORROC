@@ -25,23 +25,23 @@ dofile("./AI_sakray/USER_AI/H_PVP_Tact.lua")
 dofile("./AI_sakray/USER_AI/H_Avoid.lua")
 dofile("./AI_sakray/USER_AI/H_Extra.lua")
 
-local logFileName = "AAI_TraceAI.log"
+-- local logFileName = "AAI_TraceAI.log"
 
-function TraceAI(message)
-    -- Abra o arquivo de log no modo de anexar (para adicionar novas mensagens ao arquivo)
-    local logFile = io.open(logFileName, "a")
+-- function TraceAI(message)
+--     -- Abra o arquivo de log no modo de anexar (para adicionar novas mensagens ao arquivo)
+--     local logFile = io.open(logFileName, "a")
 
-    -- Verifique se o arquivo foi aberto com sucesso
-    if logFile then
-        -- Escreva a mensagem no arquivo
-        logFile:write(os.date("[%Y-%m-%d %H:%M:%S] ") .. message .. "\n")
+--     -- Verifique se o arquivo foi aberto com sucesso
+--     if logFile then
+--         -- Escreva a mensagem no arquivo
+--         logFile:write(os.date("[%Y-%m-%d %H:%M:%S] ") .. message .. "\n")
 
-        -- Feche o arquivo
-        logFile:close()
-    end
+--         -- Feche o arquivo
+--         logFile:close()
+--     end
 
-		print(message)
-end
+-- 		print(message)
+-- end
 
 function WriteStartupLog(Version,ErrorCode,ErrorInfo)
 	local verspattern="%d.%d%d"

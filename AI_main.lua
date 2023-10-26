@@ -2398,7 +2398,6 @@ function DoAutoBuffs(buffmode)
 			elseif (GetSkillInfo(skill,3,level) <= GetV(V_SP,MyID)) then
 				DoSkill(skill,level,MyID,1)
 				GuardTimeout = AutoSkillCastTimeout + GetSkillInfo(skill,8,level)
-				TraceAI("GuardTimeout: "..GuardTimeout)
 				UpdateTimeoutFile()
 				return
 			end
