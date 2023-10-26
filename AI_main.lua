@@ -504,7 +504,6 @@ function	OnIDLE_ST ()
 			aggro=0
 		end
 		object=SelectEnemy(GetEnemyList(MyID,aggro))
-		TraceAI("Enemys: "..object)
 		if object~=0 then
 			MyState = CHASE_ST
 			MyEnemy = object
@@ -2377,7 +2376,7 @@ function DoAutoBuffs(buffmode)
 		end
 	end
 	
-	if (UseDefensiveBuff == buffmode and GuardTimeout ~=-1) then
+	if (UseDefensiveBuff == buffmode and GuardTimeout ~=-1 and GetAggroCount() > 1) then
 		
 		if (GetTick() > GuardTimeout) then
 			local skill,level = GetGuardSkill(MyID)
