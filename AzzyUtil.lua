@@ -319,8 +319,8 @@ function IsFriendOrSelf(id)
 end
 
 function IsPlayer(id)
-	if (id>MagicNumber2) then
-		return 0
+	if (id<MagicNumber2) then
+		return 1
 	else
 		return 0
 	end

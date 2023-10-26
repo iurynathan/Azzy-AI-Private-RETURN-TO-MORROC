@@ -3316,6 +3316,7 @@ function AI(myid)
 	local seralegionActive=0
 	local seralegionBugged=0
 	for i,v in ipairs(actors) do
+		-- TraceAI("\nIsMonster?: "..IsMonster(v).. " \nMonsterID: "..v.."\n")
 		local x,y = GetV(V_POSITION,v)
 		TakenCells[x.."_"..y]=1
 		if AAIActors[v]~=1 then
@@ -3329,7 +3330,7 @@ function AI(myid)
 		local x,y = GetV(V_POSITION,v)
 		if GetV(V_HOMUNTYPE,v)==1102 and x==174 and 33==y and GetV(V_MOTION,v)==MOTION_STAND then
 			-- This is the eden group bathory, ignore it. 
-		else	
+		else
 			if (false == IsOutOfSight(myid,v)) then
 				Actors[v]=1
 				--TraceAI(v.." of type "..GetV(V_HOMUNTYPE,v).." in sight")
@@ -3345,7 +3346,7 @@ function AI(myid)
 						end
 					end
 				end
-				if (v > MagicNumber2) then
+				if (v < MagicNumber2) then
 					Players[v]=1
 					if MyFriends[v]==FRIEND and GetV(V_OWNER,MyID)~=v then --Newly appeared on screen
 						if OldPlayers[v]~=1 or AggressiveAutofriend then
@@ -3374,7 +3375,7 @@ function AI(myid)
 						end	
 					end
 				elseif IsMonster(v)==1 then
-					--TraceAI(v.." of type "..GetV(V_HOMUNTYPE,v).." is a monster")
+					-- TraceAI2("\n"..v.." of type "..GetV(V_HOMUNTYPE,v).." is a monster\n")
 					if LiveMobID == 1 and IsHomun(MyID)==1 then
 						tMobID=tMobID.."MobID["..v.."]="..GetV(V_HOMUNTYPE,v).."\n"
 					end
@@ -3445,7 +3446,7 @@ function AI(myid)
 		end
 		--logappend("AAI_Legion","Sera Legion - "..SeraLegionCount.." bugs out "..SeraLegionActive.." active and "..SeraLegionBugged.." bugged. "..SeraLegionList)
 	end
-	if PVPmode==0 then
+	if PVPmode==1 then
 		for k,v in pairs(Players) do
 			--logappend("AAI_PVP",k.." ("..GetV(V_HOMUNTYPE,k)..") Motion: "..FormatMotion(GetV(V_MOTION,k)).."Is monster? "..IsMonster(k))
 			if IsHomun(MyID)==1 then
@@ -3455,6 +3456,12 @@ function AI(myid)
 			end
 			if IsMonster(k)==1 then
 				Targets[k] = {MotionClassLU[GetV(V_MOTION,k)],GetTargetClass(GetV(V_TARGET,k))}
+			end
+		end
+	else
+		for monsterId,v in pairs(Monsters) do
+			if IsMonster(monsterId)==1 then
+				Targets[monsterId] = {MotionClassLU[GetV(V_MOTION,monsterId)],GetTargetClass(GetV(V_TARGET,monsterId))}
 			end
 		end
 	end

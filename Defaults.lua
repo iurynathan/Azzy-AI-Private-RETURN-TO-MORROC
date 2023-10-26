@@ -212,7 +212,7 @@ AttackDebuffLimit	=1
 
 
 MagicNumber		=42000
-MagicNumber2		=100000
+MagicNumber2		=2500000
 
 
 
