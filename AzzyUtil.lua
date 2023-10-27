@@ -1856,10 +1856,12 @@ function GetAtkSkill(myid)
 	local skill = 0
 	local level = 0
 	if (IsHomun(myid) == 1) then
-		if (homuntype == OCCULT) then
+		homunculuType = GetV(V_HOMUNTYPE,myid)
+
+		if (homunculuType == OCCULT) then
 			skill = S_ILLUSION_OF_BREATH
 
-			if GetTick() < AutoSkillCooldown[skill] then
+			if (GetTick() < AutoSkillCooldown[skill]) then
 				level = 0
 				skill = 0
 			elseif (illusionOfBreathLevel == nil) then
@@ -1867,10 +1869,10 @@ function GetAtkSkill(myid)
 			else
 				level = illusionOfBreathLevel
 			end
-		elseif	(homuntype == AGILE) then
+		elseif	(homunculuType == AGILE) then
 			skill = S_ILLUSION_OF_CLAWS
 			
-			if GetTick() < AutoSkillCooldown[skill] then
+			if (GetTick() < AutoSkillCooldown[skill]) then
 				level = 0
 				skill = 0
 			elseif (illusionOfClawsLevel == nil) then
