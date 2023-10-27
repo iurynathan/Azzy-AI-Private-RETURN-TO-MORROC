@@ -6,6 +6,8 @@ Este script destina-se a ser colocado dentro da pasta AI_sakray/USER_AI do seu a
 
 Dentro do arquivo 'H Extra.lua' do script, você pode definir o nível das habilidades que serão usadas. Isso permitirá que você personalize o comportamento da IA para se adequar às suas necessidades.
 
+Para não usar a skill coloque o valor em  '0'
+
 Aqui está um exemplo de como configurar o nível das habilidades:
 
 ```lua
@@ -24,6 +26,10 @@ Place this script inside the AI_sakray/USER_AI folder in your development enviro
 ## Configuração de Habilidades
 
 Inside the 'H Extra.lua' file, you can configure the skill levels that the AI will use.
+
+To not use the skill, set the value to '0'
+
+Here is an example of how to set skill levels:
 
 ```lua
 illusionOfClawsLevel = 5
