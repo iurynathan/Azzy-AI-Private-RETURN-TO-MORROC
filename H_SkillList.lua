@@ -183,7 +183,7 @@ SkillInfo[S_ILLUSION_OF_BREATH] = {
   "Illusion of Breath",  --Skill Name
   {7, 7, 7, 7, 7, 7, 7, 7, 7, 7}, -- Range
   {25, 30, 35, 40, 45, 50, 55, 60, 65, 70}, -- SP Cost
-  {300, 300, 300, 300, 300, 300, 300, 300, 300, 300}, -- Fixed cast (ms)
+  {400, 400, 400, 400, 400, 400, 400, 400, 400, 400}, -- Fixed cast (ms)
   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- Variable cast (ms)
   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- Delay (ms)
   1, -- Target mode (0 = self targeted, 1 = enemy targeted, 2 = ground targeted) 
