@@ -1861,28 +1861,32 @@ function GetAtkSkill(myid)
 		if (homunculuType == OCCULT) then
 			skill = S_ILLUSION_OF_BREATH
 
-			if (GetTick() < AutoSkillCooldown[skill]) then
+			if (illusionOfBreathLevel == 0) then
+				level = 0
+			elseif (GetTick() < AutoSkillCooldown[skill]) then
 				level = 0
 				skill = 0
-			elseif (illusionOfBreathLevel == nil) then
+			elseif (illusionOfBreathLevel == nil and illusionOfBreathLevel > 0) then
 				level = 10
 			else
 				level = illusionOfBreathLevel
 			end
 		elseif	(homunculuType == AGILE) then
 			skill = S_ILLUSION_OF_CLAWS
-			
-			if (GetTick() < AutoSkillCooldown[skill]) then
+
+			if (illusionOfClawsLevel == 0) then
+				level = 0
+			elseif (GetTick() < AutoSkillCooldown[skill]) then
 				level = 0
 				skill = 0
-			elseif (illusionOfClawsLevel == nil) then
+			elseif (illusionOfClawsLevel == nil and illusionOfClawsLevel > 0) then
 				level = 5
 			else
 				level = illusionOfClawsLevel
 			end
 		end
 
-		if (level ~=0) then
+		if (level ~= 0) then
 			return skill, level
 		end
 
@@ -2063,7 +2067,9 @@ function GetQuickenSkill(myid)
 	if (IsHomun(myid) == 1) then
 		skill = S_BODY_DOUBLE
 
-		if (bodyDoubleLevel==nil) then
+		if (bodyDoubleLevel == 0) then
+			level = 0
+		elseif (bodyDoubleLevel == nil and bodyDoubleLevel > 0) then
 			level = 5
 		else
 			level = bodyDoubleLevel
@@ -2211,7 +2217,9 @@ function GetGuardSkill(myid)
 		htype = GetV(V_HOMUNTYPE,myid)
 		skill = S_WARM_DEF
 
-		if (warmDefLevel == nil) then
+		if (warmDefLevel == 0) then
+			level = 0
+		elseif (warmDefLevel == nil and warmDefLevel > 0) then
 			level = 5
 		else
 			level = warmDefLevel
@@ -2296,9 +2304,11 @@ function GetHealingSkill(myid)
 	if (IsHomun(myid)==1) then
 		skill = S_CHAOTIC_HEAL
 
-		if (GetTick() < AutoSkillCooldown[skill]) then
+		if (chaoticHealLevel == 0) then
 			level = 0
-		elseif (chaoticHealLevel==nil) then
+		elseif (GetTick() < AutoSkillCooldown[skill]) then
+			level = 0
+		elseif (chaoticHealLevel == nil and chaoticHealLevel > 0) then
 			level = 5
 		else
 			level = chaoticHealLevel

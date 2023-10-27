@@ -183,7 +183,7 @@ SkillInfo[S_ILLUSION_OF_BREATH] = {
   "Illusion of Breath",  --Skill Name
   {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, -- Range
   {25, 30, 35, 40, 45, 50, 55, 60, 65, 70}, -- SP Cost
-  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- Fixed cast (ms)
+  {300, 300, 300, 300, 300, 300, 300, 300, 300, 300}, -- Fixed cast (ms)
   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- Variable cast (ms)
   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- Delay (ms)
   1, -- Target mode (0 = self targeted, 1 = enemy targeted, 2 = ground targeted) 
@@ -238,10 +238,9 @@ SkillAOEInfo[MH_POISON_MIST]={{7,7,7,7,7},0}
 SkillAOEInfo[MH_LAVA_SLIDE]={{7,7,7,7,7,7,7,7,7,7},0}
 SkillAOEInfo[MH_XENO_SLASHER]={{5,5,7,7,9,9},0}
 -- SkillAOEInfo[MH_HEILIGE_STANGE]={{3,3,3,3,5},0}
-SkillAOEInfo[S_ILLUSION_OF_LIGHT]={{3,3,3,3,5},0}
--- SkillAOEInfo[MH_HEILIGE_STANGE]={{3,3,3,3,5},0}
-SkillAOEInfo[S_ILLUSION_OF_BREATH]={
+SkillAOEInfo[S_ILLUSION_OF_LIGHT] = {
   {3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
   0
 }
+-- SkillAOEInfo[MH_HEILIGE_STANGE]={{3,3,3,3,5},0}
 SkillAOEInfo[HVAN_SELFDESTRUCT]={{9,9,9},1}
