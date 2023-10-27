@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 data/*Timeouts.lua
 data/H_*txt
+=======
+data/*.txt
+data/*.lua
+>>>>>>> 626bfa2f0c575887d860ce621416f392334b17ff
