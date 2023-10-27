@@ -655,12 +655,6 @@ function	OnCHASE_ST ()
 		MySkill,MySkillLevel=GetAtkSkill(MyID)
 		-- TraceAI("OnCHASE_ST MySkill: " .. MySkill)
 	end
-	-- if (UseSkillOnly==1 and MySkill ~= 0) then
-	-- 	skill,level=GetAtkSkill(MyID)
-	-- else
-	-- 	skill=nil
-	-- 	level=nil
-	-- end
 	if true==IsOutOfSight(MyID,MyEnemy) then
 		value="true "
 	else
