@@ -651,12 +651,16 @@ function	OnCHASE_ST ()
 	if DoAutoBuffs(-1) == 1 then
 		DoAutoBuffs(2)
 	end
-	if (UseSkillOnly==1 and MySkill ~= 0) then
-		skill,level=GetAtkSkill(MyID)
-	else
-		skill=nil
-		level=nil
+	if (UseAttackSkill == 1) then
+		MySkill,MySkillLevel=GetAtkSkill(MyID)
+		-- TraceAI("OnCHASE_ST MySkill: " .. MySkill)
 	end
+	-- if (UseSkillOnly==1 and MySkill ~= 0) then
+	-- 	skill,level=GetAtkSkill(MyID)
+	-- else
+	-- 	skill=nil
+	-- 	level=nil
+	-- end
 	if true==IsOutOfSight(MyID,MyEnemy) then
 		value="true "
 	else
@@ -759,7 +763,7 @@ function	OnCHASE_ST ()
 			end
 		end
 	end
-	if (true == IsInAttackSight(MyID,MyEnemy,skill,level)) then  -- ENEMY_INATTACKSIGHT_IN
+	if (true == IsInAttackSight(MyID,MyEnemy,MySkill,MySkillLevel)) then  -- ENEMY_INATTACKSIGHT_IN
 		MyState = ATTACK_ST
 		AttackTimeout=GetTick()+AttackTimeLimit
 		ExChaseGiveUpCount=ChaseGiveUpCount
