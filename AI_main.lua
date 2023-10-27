@@ -2364,7 +2364,7 @@ function DoAutoBuffs(buffmode)
 			if (skill<=0) then
 				QuickenTimeout = -1
 			elseif level==0 then
-				 -- skill in cooldown
+				-- skill in cooldown
 			else
 				if (GetSkillInfo(skill,3,level) <= GetV(V_SP,MyID)) then
 					DoSkill(skill,level,MyID,2)
@@ -2376,7 +2376,7 @@ function DoAutoBuffs(buffmode)
 		end
 	end
 	
-	if (UseDefensiveBuff == buffmode and GuardTimeout ~=-1 and GetAggroCount() > 1) then
+	if (UseDefensiveBuff == buffmode and GuardTimeout ~=-1) then
 		
 		if (GetTick() > GuardTimeout) then
 			local skill,level = GetGuardSkill(MyID)
