@@ -1270,7 +1270,7 @@ function	IsOutOfSight (id1,id2)
 end
 
 
-function	IsInAttackSight (myid,target,skill,level)
+function IsInAttackSight (myid,target,skill,level)
 	if (skill==nil) then
 		skill=MySkill
 		level=MySkillLevel
@@ -2476,7 +2476,7 @@ function DoSkill(skill, level, target, mode, targx, targy)
 		end
 	end
 	local t=GetTick();
-	delay=400 + GetSkillInfo(skill,4,level)+GetSkillInfo(skill,5,level)*0.5
+	delay=AutoSkillDelay + GetSkillInfo(skill,4,level)+GetSkillInfo(skill,5,level)*0.5
 	AutoSkillCastTimeout=delay+t
 	if AutoSkillCooldown[skill]~=nil then
 		AutoSkillCooldown[skill]=t+GetSkillInfo(skill,9,level)+delay

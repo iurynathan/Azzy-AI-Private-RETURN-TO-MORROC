@@ -701,7 +701,8 @@ function	OnCHASE_ST ()
 				EnemyPosX = {0,0,0,0,0,0,0,0,0,0}
 				EnemyPosY = {0,0,0,0,0,0,0,0,0,0}
 				MyDestX,MyDestY=0,0
-		        ChaseGiveUpCount=0
+				ChaseGiveUpCount=0
+
 				return OnFOLLOW_ST()
 			elseif AllTargetUnreachable==1 then
 				MyState = FOLLOW_ST
@@ -711,6 +712,7 @@ function	OnCHASE_ST ()
 				MyEnemy = 0
 				EnemyPosX = {0,0,0,0,0,0,0,0,0,0}
 				EnemyPosY = {0,0,0,0,0,0,0,0,0,0}
+
 				return OnFOLLOW_ST()
 			else 
 				MyState = IDLE_ST
@@ -722,6 +724,7 @@ function	OnCHASE_ST ()
 				EnemyPosY = {0,0,0,0,0,0,0,0,0,0}
 				if (FastChangeCount < FastChangeLimit and FastChange_C2I == 1) then
 					FastChangeCount = FastChangeCount+1
+
 					return OnIDLE_ST()
 				else
 					return
