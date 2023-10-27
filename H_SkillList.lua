@@ -179,7 +179,17 @@ SkillInfo[S_ILLUSION_OF_CLAWS]={"Illusion of Claws",{1,1,1,1,1},{5,10,15,20,25},
 SkillInfo[S_WARM_DEF] = {"Warm Defense",{0,0,0,0,0},{20,25,30,35,40},{0,0,0,0,0},{0,0,0,0,0},{2000,4000,6000,8000,10000},0,{8000,8000,8000,8000,8000}}
 SkillInfo[S_CHAOTIC_HEAL]={"Chaotic Heal",{0,0,0,0,0},{40,40,40,40,40},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},0,{0,0,0,0,0},{0,0,0,0,0}}
 SkillInfo[S_BODY_DOUBLE]={"Body Double",{0,0,0,0,0},{20,25,30,35,40},{1000,1000,1000,1000,1000},{0,0,0,0,0},{0,0,0,0,0},0,{10000,20000,30000,40000,50000},{0,0,0,0,0}}
-SkillInfo[S_ILLUSION_OF_BREATH]={"Illusion of Breath",{1,1,1,1,1},{25,30,35,40,45},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},1,{0,0,0,0,0},{0,0,0,0,0}}
+SkillInfo[S_ILLUSION_OF_BREATH] = {
+  "Illusion of Breath",  --Skill Name
+  {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, -- Range
+  {25, 30, 35, 40, 45, 50, 55, 60, 65, 70}, -- SP Cost
+  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- Fixed cast (ms)
+  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- Variable cast (ms)
+  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- Delay (ms)
+  1, -- Target mode (0 = self targeted, 1 = enemy targeted, 2 = ground targeted) 
+  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- Duration (ms)
+  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0} -- Reuse Delay (ms)
+}
 
 --#####################################
 
@@ -229,4 +239,9 @@ SkillAOEInfo[MH_LAVA_SLIDE]={{7,7,7,7,7,7,7,7,7,7},0}
 SkillAOEInfo[MH_XENO_SLASHER]={{5,5,7,7,9,9},0}
 -- SkillAOEInfo[MH_HEILIGE_STANGE]={{3,3,3,3,5},0}
 SkillAOEInfo[S_ILLUSION_OF_LIGHT]={{3,3,3,3,5},0}
+-- SkillAOEInfo[MH_HEILIGE_STANGE]={{3,3,3,3,5},0}
+SkillAOEInfo[S_ILLUSION_OF_BREATH]={
+  {3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+  0
+}
 SkillAOEInfo[HVAN_SELFDESTRUCT]={{9,9,9},1}
