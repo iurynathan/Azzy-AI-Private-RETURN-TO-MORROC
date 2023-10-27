@@ -1772,45 +1772,45 @@ function GetSAtkSkill(myid)
 	local skill = 0
 	local level = 0
 	if (IsHomun(myid)==1) then
-		htype=GetV(V_HOMUNTYPE,myid)
-		if htype > 47 then -- it's a Homun S
-			if htype==EIRA and UseEiraEraseCutter==1 then
-				skill=MH_ERASER_CUTTER
-				if EiraEraseCutterLevel==nil then
-					level=4
-				else
-					level=EiraEraseCutterLevel
-				end
-			elseif htype==BAYERI and UseBayeriStahlHorn==1 then
-				skill=MH_STAHL_HORN
-				if BayeriStahlHornLevel==nil then
-					level=5
-				else
-					level=BayeriStahlHornLevel
-				end
-			elseif htype==SERA and UseSeraParalyze==1 then
-				skill=MH_NEEDLE_OF_PARALYZE
-				if SeraParalyzeLevel==nil then
-					level=5
-				else
-					level=SeraParalyzeLevel
-				end
-			elseif htype==ELEANOR and UseEleanorSonicClaw==1 and ( EleanorMode==0 or EleanorDoNotSwitchMode==1 ) then
-				skill=MH_SONIC_CRAW
-				if EleanorSonicClawLevel==nil then
-					level=5
-				else
-					level=EleanorSonicClawLevel
-				end
-			elseif htype==ELEANOR and UseEleanorTinderBreaker==1 and EleanorMode==1 then
-				skill=MH_TINDER_BREAKER
-				if EleanorTinderBreakerLevel==nil then
-					level=5
-				else
-					level=EleanorTinderBreakerLevel
-				end
-			end
-		end
+		-- htype=GetV(V_HOMUNTYPE,myid)
+		-- if htype > 47 then -- it's a Homun S
+		-- 	if htype==EIRA and UseEiraEraseCutter==1 then
+		-- 		skill=MH_ERASER_CUTTER
+		-- 		if EiraEraseCutterLevel==nil then
+		-- 			level=4
+		-- 		else
+		-- 			level=EiraEraseCutterLevel
+		-- 		end
+		-- 	elseif htype==BAYERI and UseBayeriStahlHorn==1 then
+		-- 		skill=MH_STAHL_HORN
+		-- 		if BayeriStahlHornLevel==nil then
+		-- 			level=5
+		-- 		else
+		-- 			level=BayeriStahlHornLevel
+		-- 		end
+		-- 	elseif htype==SERA and UseSeraParalyze==1 then
+		-- 		skill=MH_NEEDLE_OF_PARALYZE
+		-- 		if SeraParalyzeLevel==nil then
+		-- 			level=5
+		-- 		else
+		-- 			level=SeraParalyzeLevel
+		-- 		end
+		-- 	elseif htype==ELEANOR and UseEleanorSonicClaw==1 and ( EleanorMode==0 or EleanorDoNotSwitchMode==1 ) then
+		-- 		skill=MH_SONIC_CRAW
+		-- 		if EleanorSonicClawLevel==nil then
+		-- 			level=5
+		-- 		else
+		-- 			level=EleanorSonicClawLevel
+		-- 		end
+		-- 	elseif htype==ELEANOR and UseEleanorTinderBreaker==1 and EleanorMode==1 then
+		-- 		skill=MH_TINDER_BREAKER
+		-- 		if EleanorTinderBreakerLevel==nil then
+		-- 			level=5
+		-- 		else
+		-- 			level=EleanorTinderBreakerLevel
+		-- 		end
+		-- 	end
+		-- end
 		if level ~=0 then
 			return skill,level
 		end
@@ -2049,13 +2049,13 @@ function GetMobSkill(myid)
 				else
 					level=EiraXenoSlasherLevel
 				end
-			elseif htype==BAYERI and UseBayeriHailegeStar==1 then
-				skill=MH_HEILIGE_STANGE
-				if BayeriHailegeStarLevel==nil then
-					level=5
-				else
-					level=BayeriHailegeStarLevel
-				end
+			-- elseif htype==BAYERI and UseBayeriHailegeStar==1 then
+			-- 	skill=MH_HEILIGE_STANGE
+			-- 	if BayeriHailegeStarLevel==nil then
+			-- 		level=5
+			-- 	else
+			-- 		level=BayeriHailegeStarLevel
+			-- 	end
 			elseif htype==SERA and UseSeraPoisonMist==1 and PoisonMistMode==0 then
 				skill=MH_POISON_MIST
 				if SeraPoisonMistLevel==nil then
@@ -2368,7 +2368,7 @@ function GetHealingSkill(myid)
 			if GetTick() < AutoSkillCooldown[skill] then
 				level=0
 			elseif (VaniChaoticLevel==nil) then
-				level=3
+				level=5
 			else
 				level=VaniChaoticLevel
 			end
