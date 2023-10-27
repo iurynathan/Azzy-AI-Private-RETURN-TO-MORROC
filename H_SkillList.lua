@@ -43,27 +43,27 @@ MER_SCAPEGOAT		= 8235
 MER_LEXDIVINA		= 8236
 MER_ESTIMATION		= 8237
 
--- HFLI_MOON = S_ILLUSION_OF_CLAWS
--- HVAN_CHAOTIC = S_CHAOTIC_HEAL
--- HAMI_DEFENCE = S_WARM_DEF
--- Homunculus Skills
-HLIF_HEAL		= 8001
-HLIF_AVOID		= 8002
-HLIF_CHANGE		= 8004
-HAMI_CASTLE		= 8005
-HAMI_DEFENCE		= 8006
-HAMI_BLOODLUST		= 8008
-HFLI_MOON		= 8009
-HFLI_FLEET		= 8010
-HFLI_SPEED		= 8011
-HFLI_SBR44		= 8012
-HVAN_CAPRICE		= 8013
-HVAN_CHAOTIC		= 8014
-HVAN_SELFDESTRUCT	= 8016
+-- Kimi Skills
+
+S_ILLUSION_OF_CLAWS	= 8009
+S_WARM_DEF = 8006
+S_CHAOTIC_HEAL = 8014
 S_BODY_DOUBLE = 8022
 S_ILLUSION_OF_BREATH = 8024
 S_ILLUSION_OF_LIGHT = 8034
 
+-- Homunculus Skills
+
+HLIF_HEAL		= 8001
+HLIF_AVOID		= 8002
+HLIF_CHANGE		= 8004
+HAMI_CASTLE		= 8005
+HAMI_BLOODLUST		= 8008
+HFLI_FLEET		= 8010
+HFLI_SPEED		= 8011
+HFLI_SBR44		= 8012
+HVAN_CAPRICE		= 8013
+HVAN_SELFDESTRUCT	= 8016
 --Homun S Skills
 MUTATION_BASEJOB 	= 8017
 MH_SUMMON_LEGION 	= 8018
@@ -95,41 +95,35 @@ MH_PYROCLASTIC 		= 8042
 MH_VOLCANIC_ASH 	= 8043
 
 --SkillList[homuntype][skillid]=level
+
 SkillList={}
 
---    ####################
---    #### Agile Kimi ####
---    ####################
+--####################
+--#### Agile Kimi ####
+--####################
 
-SkillList[FILIR]={}
-SkillList[FILIR][HFLI_MOON]=5
-SkillList[FILIR][HVAN_CHAOTIC]=5
-SkillList[FILIR][HAMI_DEFENCE]=5
-SkillList[FILIR][S_BODY_DOUBLE]=5
+SkillList[AGILE]={}
+SkillList[AGILE][S_ILLUSION_OF_CLAWS]=5
+SkillList[AGILE][S_CHAOTIC_HEAL]=5
+SkillList[AGILE][S_WARM_DEF]=5
+SkillList[AGILE][S_BODY_DOUBLE]=5
 
---    #######################
---    ##### Occult Kimi #####
---    #######################
+--#####################
+--#### Occult Kimi ####
+--#####################
 
-SkillList[LIF]={}
-SkillList[LIF][S_ILLUSION_OF_LIGHT]=10
-SkillList[LIF][S_ILLUSION_OF_BREATH]=10
-SkillList[LIF][HVAN_CHAOTIC]=5
-SkillList[LIF][HAMI_DEFENCE]=5
-SkillList[LIF][S_BODY_DOUBLE]=3
+SkillList[OCCULT]={}
+SkillList[OCCULT][S_ILLUSION_OF_LIGHT]=10
+SkillList[OCCULT][S_ILLUSION_OF_BREATH]=10
+SkillList[OCCULT][S_CHAOTIC_HEAL]=5
+SkillList[OCCULT][S_WARM_DEF]=5
+SkillList[OCCULT][S_BODY_DOUBLE]=5
 
 --############################
 
-SkillList[AMISTR]={}
-SkillList[AMISTR][HAMI_CASTLE]=5
-SkillList[AMISTR][HAMI_DEFENCE]=5
-SkillList[AMISTR][HAMI_BLOODLUST]=3
--- SkillList[FILIR][HFLI_FLEET]=5
--- SkillList[FILIR][HFLI_SPEED]=5
--- SkillList[FILIR][HFLI_SBR44]=3
 SkillList[VANILMIRTH]={}
 SkillList[VANILMIRTH][HVAN_CAPRICE]=5
-SkillList[VANILMIRTH][HVAN_CHAOTIC]=5
+SkillList[VANILMIRTH][S_CHAOTIC_HEAL]=5
 SkillList[VANILMIRTH][HVAN_SELFDESTRUCT]=3
 SkillList[SERA]={}
 SkillList[SERA][MH_SUMMON_LEGION ]=5
@@ -181,10 +175,10 @@ SkillList[DIETER][MH_VOLCANIC_ASH ]=5
 
 SkillInfo={}
 SkillInfo[0]={"No Skill",{0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0}}
-SkillInfo[HFLI_MOON]={"Illusion of Claws",{1,1,1,1,1},{5,10,15,20,25},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},1,{0,0,0,0,0},{0,0,0,0,0}}
-SkillInfo[HAMI_DEFENCE]={"Warm Defense",{0,0,0,0,0},{20,25,30,35,40},{0,0,0,0,0},{0,0,0,0,0},{2000,4000,6000,8000,10000},0,{8000,8000,8000,8000,8000}}
-SkillInfo[HVAN_CHAOTIC]={"Chaotic Heal",{0,0,0,0,0},{40,40,40,40,40},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},0,{0,0,0,0,0},{0,0,0,0,0}}
-SkillInfo[S_BODY_DOUBLE]={"Body Double",{0,0,0,0,0},{20,30,40,50,60},{1000,1000,1000,1000,1000},{0,0,0,0,0},{10000,20000,30000,40000,50000},0,{0,0,0,0,0},{9500,19500,29500,39500,49500}}
+SkillInfo[S_ILLUSION_OF_CLAWS]={"Illusion of Claws",{1,1,1,1,1},{5,10,15,20,25},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},1,{0,0,0,0,0},{0,0,0,0,0}}
+SkillInfo[S_WARM_DEF] = {"Warm Defense",{0,0,0,0,0},{20,25,30,35,40},{0,0,0,0,0},{0,0,0,0,0},{2000,4000,6000,8000,10000},0,{8000,8000,8000,8000,8000}}
+SkillInfo[S_CHAOTIC_HEAL]={"Chaotic Heal",{0,0,0,0,0},{40,40,40,40,40},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},0,{0,0,0,0,0},{0,0,0,0,0}}
+SkillInfo[S_BODY_DOUBLE]={"Body Double",{0,0,0,0,0},{20,30,40,50,60},{1000,1000,1000,1000,1000},{0,0,0,0,0},{0,0,0,0,0},0,{10000,20000,30000,40000,50000},{0,0,0,0,0}}
 
 --#####################################
 

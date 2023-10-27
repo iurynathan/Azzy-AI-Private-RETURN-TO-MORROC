@@ -8,15 +8,15 @@ MainVersion="1.56"
 
 ResCmdList			= List.new()
 -- As of dev 15, global variables are now in Const_.lua
-AutoSkillCooldown		= {}
-AutoSkillCooldown[HFLI_MOON]=0
-AutoSkillCooldown[HVAN_CAPRICE]=0
-AutoSkillCooldown[HVAN_CHAOTIC]=0
-AutoSkillCooldown[HLIF_HEAL]=0
-AutoSkillCooldown[MH_POISON_MIST]=0
-AutoSkillCooldown[MH_LAVA_SLIDE]=0
-AutoSkillCooldown[MH_STEINWAND]=0 	
-AutoSkillCooldown[MH_SUMMON_LEGION]=0
+
+AutoSkillCooldown	= {}
+AutoSkillCooldown[S_ILLUSION_OF_CLAWS]=0
+AutoSkillCooldown[S_CHAOTIC_HEAL]=0
+AutoSkillCooldown[S_WARM_DEF]=0
+AutoSkillCooldown[S_BODY_DOUBLE]=0
+AutoSkillCooldown[S_ILLUSION_OF_LIGHT]=0
+AutoSkillCooldown[S_ILLUSION_OF_BREATH]=0 	
+
 -----------Config checking----------------
 
 function doInit(myid)
@@ -40,7 +40,7 @@ function doInit(myid)
 	if loadtimesuccess==false then
 		logstring=logstring.."\nfailed to load timeouts for owner "..GetV(V_OWNER,MyID).." if this is the first time you've used this account with AzzyAI, disregard this message"
 	end
-	if GetV(V_SKILLATTACKRANGE,myid,HVAN_CAPRICE) > 1 then -- it was a vani
+	if GetV(V_SKILLATTACKRANGE,myid,S_CHAOTIC_HEAL) > 1 then -- it was a vani
 		OldHomunType=VANILMIRTH
 	end
 	-- if GetV(V_SKILLATTACKRANGE,myid,MH_ERASER_CUTTER) == 1 then
@@ -2358,50 +2358,43 @@ function DoAutoBuffs(buffmode)
 			end
 		end
 	end
+
 	if (UseOffensiveBuff == buffmode and QuickenTimeout ~=-1) then
 		if (GetTick() > QuickenTimeout) then
-			local skill,level = GetQuickenSkill(MyID)
-			if (skill<=0) then
+			local skill, level = GetQuickenSkill(MyID)
+
+			if (skill <= 0) then
 				QuickenTimeout = -1
-			elseif level==0 then
+			elseif level == 0 then
 				-- skill in cooldown
-			else
-				if (GetSkillInfo(skill,3,level) <= GetV(V_SP,MyID)) then
-					DoSkill(skill,level,MyID,2)
-					QuickenTimeout = AutoSkillCastTimeout + GetSkillInfo(skill,8,level)
-					UpdateTimeoutFile()
-					return
-				end
+			elseif (GetSkillInfo(skill, 3, level) <= GetV(V_SP, MyID)) then
+				DoSkill(skill, level, MyID, 2)
+				QuickenTimeout = AutoSkillCastTimeout + GetSkillInfo(skill, 8, level)
+				UpdateTimeoutFile()
+
+				return
 			end
 		end
 	end
 	
 	if (UseDefensiveBuff == buffmode and GuardTimeout ~=-1) then
-		
 		if (GetTick() > GuardTimeout) then
-			local skill,level = GetGuardSkill(MyID)
+			local skill, level = GetGuardSkill(MyID)
+
 			if (skill <= 0) then
 				GuardTimeout = -1
-			elseif level==0 then
+			elseif (level == 0) then
 				-- skill in cooldown
-			elseif skill==HAMI_BULWARK and UseSmartBulwark ==1  then
-				local spreq=MyBuffSPCost+GetSkillInfo(skill,3,level)
-				if UseOffensiveBuff ~=0 and QuickenTimeout~=-1 then
-					spreq=spreq+120
-				end
-				if spreq <= GetV(V_SP,MyID) then
-					DoSkill(skill,level,MyID,1)
-					GuardTimeout = AutoSkillCastTimeout + GetSkillInfo(skill,8,level)
-					UpdateTimeoutFile()
-				end
-			elseif (GetSkillInfo(skill,3,level) <= GetV(V_SP,MyID)) then
-				DoSkill(skill,level,MyID,1)
-				GuardTimeout = AutoSkillCastTimeout + GetSkillInfo(skill,8,level)
+			elseif (GetSkillInfo(skill, 3, level) <= GetV(V_SP,MyID)) then
+				DoSkill(skill, level, MyID, 2)
+				GuardTimeout = AutoSkillCastTimeout + GetSkillInfo(skill, 8, level)
 				UpdateTimeoutFile()
+
 				return
 			end
 		end
 	end
+
 	if SOffensiveTimeout ~=-1 then
 		if (GetTick() > SOffensiveTimeout) then
 			local skill,level,opt = GetSOffensiveSkill(MyID)
@@ -2570,7 +2563,7 @@ function DoHealingTasks (myid)
 		return --skill in cooldown
 	end
 	if rhp < HealSelfHP then
-		if skill==HVAN_CHAOTIC then
+		if skill==S_CHAOTIC_HEAL then
 			if GetV(V_SP,myid) > GetSkillInfo(skill,3,level) then
 				TraceAI("Using self Healing skill "..FormatSkill(skill,level))
 				if ohp < HealOwnerHP and MyState==IDLE_ST then
@@ -3145,24 +3138,28 @@ end
 
 function AI(myid)
 	MyID = myid
+
 	if LastAITime==GetTick() then --prevent AI from running twice in the same tick. 
 		TraceAI("double-AI() call detected, blocked")
+
 		return
 	else
 		if LastAITime + 400 < GetTick() and LastAITime > 10 then
 			TraceAI("Missed AI calls. Previous AI call was "..LastAITime-GetTick().." ms ago")
 			logappend("AAI_SKILLFAIL", "Missed AI calls. Previous AI call was "..LastAITime-GetTick().." ms ago")
+
 			EnemyPosX = {0,0,0,0,0,0,0,0,0,0} --When we miss AI calls, that means our predictive motion is probly screwed up
 			EnemyPosY = {0,0,0,0,0,0,0,0,0,0} --so flush this to prevent homun from getting confused by it, 
 		end
 		LastAIDelay=GetTick()-LastAITime
 		LastAITime=GetTick()
+
 		if MyEnemy ~= 0 then
-			local ex,ey=GetV(V_POSITION,MyEnemy)
-			for v=10,2,-1 do
-				EnemyPosX[v],EnemyPosY[v]=EnemyPosX[v-1],EnemyPosY[v-1]
+			local ex, ey = GetV(V_POSITION,MyEnemy)
+			for v = 10, 2, -1 do
+				EnemyPosX[v], EnemyPosY[v] = EnemyPosX[v - 1], EnemyPosY[v - 1]
 			end
-			EnemyPosX[1],EnemyPosY[1]=ex,ey,GetV(V_MOTION,MyID)
+			EnemyPosX[1], EnemyPosY[1] = ex, ey, GetV(V_MOTION,MyID)
 		end
 	end
 	if DoneInit== 0 then
@@ -3374,7 +3371,7 @@ function AI(myid)
 						end	
 					end
 				elseif IsMonster(v)==1 then
-					-- TraceAI2("\n"..v.." of type "..GetV(V_HOMUNTYPE,v).." is a monster\n")
+					-- TraceAI("\n"..v.." of type "..GetV(V_HOMUNTYPE,v).." is a monster\n")
 					if LiveMobID == 1 and IsHomun(MyID)==1 then
 						tMobID=tMobID.."MobID["..v.."]="..GetV(V_HOMUNTYPE,v).."\n"
 					end
@@ -3435,7 +3432,7 @@ function AI(myid)
 		SeraLegionCount=math.max(SeraLegionTotalHist[1],SeraLegionTotalHist[2],SeraLegionTotalHist[3],SeraLegionTotalHist[4],SeraLegionTotalHist[5])
 		SeraLegionBugged=math.min(SeraLegionBugHist[1],SeraLegionBugHist[2],SeraLegionBugHist[3],SeraLegionBugHist[4],SeraLegionBugHist[5])
 		SeraLegionActive=SeraLegionCount-SeraLegionBugged
-		if SeraLegionCount==0 and GetTick() > AutoSkillTimeout and GetTick() < AutoSkillCooldown[MH_SUMMON_LEGION] then
+		if SeraLegionCount==0 and GetTick() > AutoSkillTimeout then
 			--Why are we in cooldown when there are no bugs out? Cast must have failed, or something killed them. 
 			AutoSkillCooldown[MH_SUMMON_LEGION]=1
 			TraceAI("Sera Legion: Legion cooldown canceled, bugs not present")

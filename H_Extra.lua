@@ -1,3 +1,9 @@
+-- Homun IDs
+-- Raging Kimi = 4
+-- Agile Kimi = 3
+-- Occult Kimi = 2
+-- Ward Kimi = 1
+
 -- This is the Extra Options file
 -- NewAutoFriend = 0 -- uncomment this if you're not using AzzyAI for your mercenary.
 -- AggressiveRelogTracking = 1               -- see documentation

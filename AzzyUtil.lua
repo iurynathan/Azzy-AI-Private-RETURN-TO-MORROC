@@ -1902,7 +1902,7 @@ function GetAtkSkill(myid)
 			homuntype=modulo(OldHomunType,4)
 		end
 		if (homuntype==0) then -- It's a vani!
-			skill=HVAN_CAPRICE
+			skill=S_CHAOTIC_HEAL
 			if GetTick() < AutoSkillCooldown[skill] then
 				level=0
 				skill=0
@@ -1912,7 +1912,7 @@ function GetAtkSkill(myid)
 				level=VanCapriceLevel
 			end
 		elseif	(homuntype==3) then -- It's a filer!
-			skill=HFLI_MOON
+			skill=S_ILLUSION_OF_CLAWS
 			if GetTick() < AutoSkillCooldown[skill] then
 				level=0
 				skill=0
@@ -2092,35 +2092,27 @@ function GetMobSkill(myid)
 end
 
 
-function	GetQuickenSkill(myid)
+function GetQuickenSkill(myid)
 	local level = 0
 	local skill = 0
+
 	if (IsHomun(myid)==1) then
-		htype=GetV(V_HOMUNTYPE,myid)
-		if htype < 17 then
-			homuntype=modulo(GetV(V_HOMUNTYPE,myid),4)
-		else
-			homuntype=modulo(OldHomunType,4)
-		end
-		if (homuntype==1) then -- It's a lif!
-			skill=HLIF_CHANGE
-			level=3
-		elseif  (homuntype==2) then --it's an amistr
-			skill=HAMI_BLOODLUST
-			level=3
-		end
+		skill = S_BODY_DOUBLE
+		level = 5
 	else
-		level=SkillList[MercType][MER_QUICKEN]
-		if level ~=nil then
-			skill=MER_QUICKEN
+		level = SkillList[MercType][MER_QUICKEN]
+
+		if level ~= nil then
+			skill = MER_QUICKEN
 		end
 	end
-	if AutoSkillCooldown[skill]~=nil then
+	if AutoSkillCooldown[skill] ~= nil then
 		if GetTick() < AutoSkillCooldown[skill] then -- in cooldown
 			level=0
 			skill=0
 		end
 	end
+
 	return skill,level
 end
 
@@ -2241,41 +2233,40 @@ function GetSightOrAoE(myid)
 	end
 	return skill,level,skillopt
 end
-function	GetGuardSkill(myid)
+
+function GetGuardSkill(myid)
 	local level = 0
 	local skill = 0
-	if (IsHomun(myid)==1) then
-		htype=GetV(V_HOMUNTYPE,myid)
+
+	if (IsHomun(myid) == 1) then
+		htype = GetV(V_HOMUNTYPE,myid)
+		skill = S_WARM_DEF
+
+		if (AmiBulwarkLevel==nil) then
+			level = 5
+		else
+			level = AmiBulwarkLevel
+		end
+
 		if htype < 17 then
 			homuntype=modulo(GetV(V_HOMUNTYPE,myid),4)
 		else
 			homuntype=modulo(OldHomunType,4)
 		end
-		if (homuntype==1) then -- It's a lif!
-			skill=HLIF_AVOID
-			if (LifEscapeLevel==nil) then
-				level=5
-			else
-				level=LifEscapeLevel
-			end
-		elseif (homuntype==3) then -- It's an amistr!
-			skill=HAMI_DEFENCE
-			if (AmiBulwarkLevel==nil) then
-				level=5
-			else
-				level=AmiBulwarkLevel
-			end
-		end
+
 		return skill,level
 	else
 		for i,v in ipairs(GuardSkillList) do
 			level = SkillList[MercType][v]
+
 			if level ~= nil then
 				skill=v
+
 				return skill,level
 			end
 		end
 	end
+
 	return 0,0
 end
 
@@ -2364,7 +2355,7 @@ function GetHealingSkill(myid)
 				level=LifHealLevel
 			end
 		elseif homuntype==3 then -- It's a vani
-			skill=HVAN_CHAOTIC
+			skill=S_CHAOTIC_HEAL
 			if GetTick() < AutoSkillCooldown[skill] then
 				level=0
 			elseif (VaniChaoticLevel==nil) then
@@ -2402,33 +2393,38 @@ function GetTargetedSkills(myid)
 	return result
 end
 
-function GetSkillInfo(skill,info,level)
-	if skill~=nil and info~=nil then
-		if SkillInfo[skill]~=nil then
-			local t=SkillInfo[skill][info]
-			if t~=nil then
-				if level ==nil and type(t)=="table" then
+function GetSkillInfo(skill, info, level)
+	if (skill ~= nil and info ~= nil) then
+		if SkillInfo[skill] ~= nil then
+			local skillInfoResult = SkillInfo[skill][info]
+
+			if skillInfoResult ~= nil then
+				if (level == nil and type(skillInfoResult) == "table") then
 					logappend("AAI_ERROR","Attempted to call GetSkillInfo() with only 2 arguments "..skill.." "..info)
-					if type(t)~="table" and t~=nil then
-						return t
+
+					if (type(skillInfoResult) ~= "table" and skillInfoResult ~= nil) then
+						return skillInfoResult
 					else
 						return -1
 					end
-				elseif type(t)~="table" then
-					return t
-				elseif SkillInfo[skill][info][level]~=nil then
+				elseif type(skillInfoResult) ~= "table" then
+					return skillInfoResult
+				elseif SkillInfo[skill][info][level] ~=nil then
 					return SkillInfo[skill][info][level]
 				else
-					logappend("AAI_ERROR","GetSkillInfo(): No skill info type "..info.." found for this level "..FormatSkill(skill,level))
-					if info==2 then
-						local r=0
+					logappend("AAI_ERROR","GetSkillInfo(): No skill info type "..info.." found for this level "..FormatSkill(skill, level))
+
+					if (info == 2) then
+						local skillAttackRangeResult = 0
+
 						if (_VERSION=="Lua 5.1") then
-							r=GetV(V_SKILLATTACKRANGE_LEVEL,MyID,skill,level)
+							skillAttackRangeResult = GetV(V_SKILLATTACKRANGE_LEVEL, MyID, skill, level)
 						else
-							r=GetV(V_SKILLATTACKRANGE,MyID,skill)
+							skillAttackRangeResult = GetV(V_SKILLATTACKRANGE, MyID, skill)
 						end
-						logappend("AAI_ERROR","GetSkillInfo(): Range for unknown skill requested, returning builtin value"..r.." "..skill)
-						return r
+						logappend("AAI_ERROR","GetSkillInfo(): Range for unknown skill requested, returning builtin value"..skillAttackRangeResult.." "..skill)
+
+						return skillAttackRangeResult
 					elseif SkillInfo[skill][info][1]~= nil then
 						return SkillInfo[skill][info][1]
 					else
@@ -2436,11 +2432,13 @@ function GetSkillInfo(skill,info,level)
 					end
 				end
 			else
-				logappend("AAI_ERROR","GetSkillInfo(): No skill info type "..info.." found for this skill "..FormatSkill(skill,level).." called by ")
-				if info==2 then
-					logappend("AAI_ERROR","GetSkillInfo(): Range for unknown skill requested, returning builtin value"..GetV(V_SKILLATTACKRANGE,MyID,skill))
-					return GetV(V_SKILLATTACKRANGE,MyID,skill)
-				elseif info==7 then
+				logappend("AAI_ERROR","GetSkillInfo(): No skill info type "..info.." found for this skill "..FormatSkill(skill, level).." called by ")
+
+				if (info == 2) then
+					logappend("AAI_ERROR","GetSkillInfo(): Range for unknown skill requested, returning builtin value"..GetV(V_SKILLATTACKRANGE, MyID, skill))
+
+					return GetV(V_SKILLATTACKRANGE, MyID, skill)
+				elseif (info == 7) then
 					return 1
 				else
 					return 0
@@ -2448,26 +2446,29 @@ function GetSkillInfo(skill,info,level)
 			end
 		else
 			logappend("AAI_ERROR","GetSkillInfo(): No skill info found for this skill "..FormatSkill(skill,level).." info type requested "..info)
-			if info==2 then
+
+			if (info == 2) then
 				logappend("AAI_ERROR","GetSkillInfo(): Range for unknown skill requested, returning builtin value"..GetV(V_SKILLATTACKRANGE,MyID,skill))
+
 				return GetV(V_SKILLATTACKRANGE,MyID,skill)
-			elseif info==7 then
+			elseif (info == 7) then
 				return 1
 			else
 				return 0
 			end
 		end
 	else
-		if skill==nil then
+		if (skill == nil) then
 			skill="nil"
 		end
-		if level==nil then
+		if (level == nil) then
 			level="nil"
 		end
-		if info==nil then
+		if (info == nil) then
 			info="nil"
 		end
 		logappend("AAI_ERROR","GetSkillInfo(): Invalid arguments - skill="..skill.." level="..level.." info="..info)
+
 		return 0
 	end
 end
@@ -2491,13 +2492,13 @@ function KiteOK(myid)
 	end
 end
 
-function DoSkill(skill,level,target,mode,targx,targy)
+function DoSkill(skill, level, target, mode, targx, targy)
 	TraceAI("doskill called skill:"..skill.."level:"..level.."target"..target)
 	if skill==0 or level==0 or skill==nil or level==nil then
 		logappend("AAI_ERROR","doskill called skill:"..skill.."level:"..level.."target"..target.."mode"..mode.."state "..MyState.."pstate "..MyPState)
 		return 0
 	end
-	targetmode=GetSkillInfo(skill,7)
+	targetmode=GetSkillInfo(skill, 7)
 	if skill==HFLI_SBR44 and AllowSBR44~=1 then
 		logappend("AAI_ERROR","Attempt to use SBR 44 blocked. If you really want to use this, set AllowSBR44 = 1 in H_Extra")
 	elseif targetmode==0 then
@@ -2552,34 +2553,6 @@ function DoSkill(skill,level,target,mode,targx,targy)
 		TraceAI("DoSkill: "..skill.." level:"..level.." target:"..target.." mode:"..targetmode.." delay "..delay.." cooldown: "..AutoSkillCooldown[skill]-GetTick())
 	else
 		TraceAI("DoSkill: "..skill.." level:"..level.." target:"..target.." mode:"..targetmode.." delay "..delay)
-	end
-	if skill==MH_MIDNIGHT_FRENZY then
-		MySpheres = math.max(0,MySpheres - 2)
-		ComboSVTimeout=0
-		UpdateTimeoutFile()
-	elseif skill==MH_SILVERVEIN_RUSH then
-		ComboSVTimeout=GetTick()+2000
-		ComboSCTimeout=0
-		MySpheres = math.max(0,MySpheres - 1)
-		UpdateTimeoutFile()
-	elseif skill==MH_SONIC_CRAW then
-		ComboSCTimeout=GetTick()+2000
-		ComboSVTimeout=0
-	elseif skill==MH_TINDER_BREAKER then
-		ComboSCTimeout=GetTick()+2000
-		ComboSVTimeout=0
-		MySpheres = math.max(0,MySpheres - 1)
-	elseif skill==MH_CBC then
-		ComboSVTimeout=GetTick()+2000
-		ComboSCTimeout=0
-		MySpheres = math.max(0,MySpheres - 1)
-	elseif skill==MH_EQC then
-		ComboSVTimeout=0
-		ComboSCTimeout=0
-		--No sphere use?
-	else --Combo wasn't used, so kill the timeouts
-		ComboSCTimeout=0
-		ComboSVTimeout=0
 	end
 
 	TraceAI("DoSkill: "..skill.." level:"..level.." target:"..target.." mode:"..targetmode.." delay "..delay)
