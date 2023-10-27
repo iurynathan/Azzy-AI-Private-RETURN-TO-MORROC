@@ -1772,45 +1772,6 @@ function GetSAtkSkill(myid)
 	local skill = 0
 	local level = 0
 	if (IsHomun(myid)==1) then
-		-- htype=GetV(V_HOMUNTYPE,myid)
-		-- if htype > 47 then -- it's a Homun S
-		-- 	if htype==EIRA and UseEiraEraseCutter==1 then
-		-- 		skill=MH_ERASER_CUTTER
-		-- 		if EiraEraseCutterLevel==nil then
-		-- 			level=4
-		-- 		else
-		-- 			level=EiraEraseCutterLevel
-		-- 		end
-		-- 	elseif htype==BAYERI and UseBayeriStahlHorn==1 then
-		-- 		skill=MH_STAHL_HORN
-		-- 		if BayeriStahlHornLevel==nil then
-		-- 			level=5
-		-- 		else
-		-- 			level=BayeriStahlHornLevel
-		-- 		end
-		-- 	elseif htype==SERA and UseSeraParalyze==1 then
-		-- 		skill=MH_NEEDLE_OF_PARALYZE
-		-- 		if SeraParalyzeLevel==nil then
-		-- 			level=5
-		-- 		else
-		-- 			level=SeraParalyzeLevel
-		-- 		end
-		-- 	elseif htype==ELEANOR and UseEleanorSonicClaw==1 and ( EleanorMode==0 or EleanorDoNotSwitchMode==1 ) then
-		-- 		skill=MH_SONIC_CRAW
-		-- 		if EleanorSonicClawLevel==nil then
-		-- 			level=5
-		-- 		else
-		-- 			level=EleanorSonicClawLevel
-		-- 		end
-		-- 	elseif htype==ELEANOR and UseEleanorTinderBreaker==1 and EleanorMode==1 then
-		-- 		skill=MH_TINDER_BREAKER
-		-- 		if EleanorTinderBreakerLevel==nil then
-		-- 			level=5
-		-- 		else
-		-- 			level=EleanorTinderBreakerLevel
-		-- 		end
-		-- 	end
-		-- end
 		if level ~=0 then
 			return skill,level
 		end
@@ -1894,47 +1855,48 @@ end
 function GetAtkSkill(myid)
 	local skill = 0
 	local level = 0
-	if (IsHomun(myid)==1) then
-		htype=GetV(V_HOMUNTYPE,myid)
-		if htype < 17 then
-			homuntype=modulo(GetV(V_HOMUNTYPE,myid),4)
-		else
-			homuntype=modulo(OldHomunType,4)
-		end
-		if (homuntype==0) then -- It's a vani!
-			skill=S_CHAOTIC_HEAL
+	if (IsHomun(myid) == 1) then
+		if (homuntype == OCCULT) then
+			skill = S_ILLUSION_OF_BREATH
+
 			if GetTick() < AutoSkillCooldown[skill] then
-				level=0
-				skill=0
-			elseif (VanCapriceLevel==nil) then
-				level=5
+				level = 0
+				skill = 0
+			elseif (illusionOfBreathLevel == nil) then
+				level = 10
 			else
-				level=VanCapriceLevel
+				level = illusionOfBreathLevel
 			end
-		elseif	(homuntype==3) then -- It's a filer!
-			skill=S_ILLUSION_OF_CLAWS
+		elseif	(homuntype == AGILE) then
+			skill = S_ILLUSION_OF_CLAWS
+			
 			if GetTick() < AutoSkillCooldown[skill] then
-				level=0
-				skill=0
-			elseif (FilerMoonlightLevel==nil) then
-				level=5
+				level = 0
+				skill = 0
+			elseif (illusionOfClawsLevel == nil) then
+				level = 5
 			else
-				level=FilerMoonlightLevel
+				level = illusionOfClawsLevel
 			end
-		end		
-		if level ~=0 then
-			return skill,level
 		end
+
+		if (level ~=0) then
+			return skill, level
+		end
+
 	else
-		for i,v in ipairs(AtkSkillList) do
+		for i, v in ipairs(AtkSkillList) do
 			level = SkillList[MercType][v]
-			if level ~= nil then
-				skill=v
-				return skill,level
+
+			if (level ~= nil) then
+				skill = v
+
+				return skill, level
 			end
 		end
 	end
-	return 0,0
+
+	return 0, 0
 end
 
 function GetPushbackSkill(myid)
@@ -2096,24 +2058,29 @@ function GetQuickenSkill(myid)
 	local level = 0
 	local skill = 0
 
-	if (IsHomun(myid)==1) then
+	if (IsHomun(myid) == 1) then
 		skill = S_BODY_DOUBLE
-		level = 5
+
+		if (bodyDoubleLevel==nil) then
+			level = 5
+		else
+			level = bodyDoubleLevel
+		end
 	else
 		level = SkillList[MercType][MER_QUICKEN]
 
-		if level ~= nil then
+		if (level ~= nil) then
 			skill = MER_QUICKEN
 		end
 	end
-	if AutoSkillCooldown[skill] ~= nil then
-		if GetTick() < AutoSkillCooldown[skill] then -- in cooldown
+	if (AutoSkillCooldown[skill] ~= nil) then
+		if (GetTick() < AutoSkillCooldown[skill]) then -- in cooldown
 			level=0
 			skill=0
 		end
 	end
 
-	return skill,level
+	return skill, level
 end
 
 function	GetSOffensiveSkill(myid)
@@ -2242,32 +2209,26 @@ function GetGuardSkill(myid)
 		htype = GetV(V_HOMUNTYPE,myid)
 		skill = S_WARM_DEF
 
-		if (AmiBulwarkLevel==nil) then
+		if (warmDefLevel == nil) then
 			level = 5
 		else
-			level = AmiBulwarkLevel
+			level = warmDefLevel
 		end
 
-		if htype < 17 then
-			homuntype=modulo(GetV(V_HOMUNTYPE,myid),4)
-		else
-			homuntype=modulo(OldHomunType,4)
-		end
-
-		return skill,level
+		return skill, level
 	else
 		for i,v in ipairs(GuardSkillList) do
 			level = SkillList[MercType][v]
 
-			if level ~= nil then
-				skill=v
+			if (level ~= nil) then
+				skill = v
 
-				return skill,level
+				return skill, level
 			end
 		end
 	end
 
-	return 0,0
+	return 0, 0
 end
 
 function	GetOffensiveOwnerSkill(myid)
@@ -2329,45 +2290,21 @@ end
 function GetHealingSkill(myid)
 	local level = 0
 	local skill = 0
+
 	if (IsHomun(myid)==1) then
-		htype=GetV(V_HOMUNTYPE,myid)
-		if htype < 17 then --if it's not a homun S just run it through modulo. 
-			homuntype=modulo(GetV(V_HOMUNTYPE,myid),4)
-		else --If it's a homun S, get the OldHomunType
-			if homuntype == EIRA and HealOwnerBreeze == 1 then --Handling for Eira silent breeze
-				skill=MH_SILENT_BREEZE
-				if GetTick() < AutoSkillCooldown[skill] then
-					level=0
-				else
-					level=5
-				end
-				return skill,level
-			end
-			homuntype=modulo(OldHomunType,4)
-		end
-		if (homuntype==1) then -- It's a lif
-			skill=HLIF_HEAL
-			if GetTick() < AutoSkillCooldown[skill] then
-				level=0
-			elseif (LifHealLevel==nil) then
-				level=5
-			else
-				level=LifHealLevel
-			end
-		elseif homuntype==3 then -- It's a vani
-			skill=S_CHAOTIC_HEAL
-			if GetTick() < AutoSkillCooldown[skill] then
-				level=0
-			elseif (VaniChaoticLevel==nil) then
-				level=5
-			else
-				level=VaniChaoticLevel
-			end
+		skill = S_CHAOTIC_HEAL
+
+		if (GetTick() < AutoSkillCooldown[skill]) then
+			level = 0
+		elseif (chaoticHealLevel==nil) then
+			level = 5
+		else
+			level = chaoticHealLevel
 		end
 	else
 		--currently no merc healing skills
 	end
-	return skill,level
+	return skill, level
 end
 
 function GetSnipeSkill(myid)

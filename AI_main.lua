@@ -43,30 +43,12 @@ function doInit(myid)
 	if GetV(V_SKILLATTACKRANGE,myid,S_CHAOTIC_HEAL) > 1 then -- it was a vani
 		OldHomunType=VANILMIRTH
 	end
-	-- if GetV(V_SKILLATTACKRANGE,myid,MH_ERASER_CUTTER) == 1 then
-	-- 	if UseEiraEraseCutter and GetV(V_HOMUNTYPE,myid)==EIRA  then
-	-- 		logstring=logstring.."UseEiraEraseCutter disabled - you don't have the skill!"
-	-- 	end
-	-- 	UseEiraEraseCutter=0
-	-- end
 	if GetV(V_SKILLATTACKRANGE,myid,MH_XENO_SLASHER) == 1 then 
 		if UseEiraXenoSlasher and GetV(V_HOMUNTYPE,myid)==EIRA then
 			logstring=logstring.."UseEiraXenoSlasher disabled - you don't have the skill!"
 		end
 		UseEiraXenoSlasher=0
 	end
-	if GetV(V_SKILLATTACKRANGE,myid,MH_STAHL_HORN) == 1 then 
-		if UseEiraEraseCutter and GetV(V_HOMUNTYPE,myid)==EIRA then
-			logstring=logstring.."UseBayeriStahlHorn disabled - you don't have the skill!"
-		end
-		UseBayeriStahlHorn=0
-	end
-	-- if GetV(V_SKILLATTACKRANGE,myid,MH_HEILIGE_STANGE) == 1 then
-	-- 	if UseBayeriHailegeStar and GetV(V_HOMUNTYPE,myid)==BAYERI then
-	-- 		logstring=logstring.."UseBayeriHailegeStar disabled - you don't have the skill!"
-	-- 	end
-	-- 	UseBayeriHailegeStar=0
-	-- end
 	if GetV(V_SKILLATTACKRANGE,myid,MH_NEEDLE_OF_PARALYZE) == 1 then
 		if UseSeraParalyze and GetV(V_HOMUNTYPE,myid)==SERA then
 			UseSeraParalyze=0
