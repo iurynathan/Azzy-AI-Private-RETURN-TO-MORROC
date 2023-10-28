@@ -2344,22 +2344,28 @@ function DoAutoBuffs(buffmode)
 end
 
 function DoHealingTasks (myid) 
-	rhp=HPPercent(myid)
-	ohp=HPPercent(GetV(V_OWNER,myid))
-	skill,level=GetHealingSkill(myid)
+	local skill,level=GetHealingSkill(myid)
 	if skill<=0 then 
 		UseAutoHeal=0
 		return
 	elseif level==0 or GetTick() < AutoSkillTimeout then
 		return --skill in cooldown
 	end
+	local rhp=HPPercent(myid)
+	local ohp=HPPercent(GetV(V_OWNER,myid))
+	local healSelfHP = HealSelfHP
+	local healOwnerHP = HealOwnerHP
+	if MyState == IDLE_ST then
+		healSelfHP = HealIdleHP
+		healOwnerHP = HealIdleHP
+	end
 	local homunculuSp = GetV(V_SP, myid)
 	local chaoticHealCostSp = math.floor(homunculuSp / GetSkillInfo(skill, 3, level))
-	if rhp < HealSelfHP then
+	if rhp < healSelfHP then
 		if skill==S_CHAOTIC_HEAL then
 			if GetV(V_SP,myid) > chaoticHealCostSp then
 				TraceAI("Using self Healing skill "..FormatSkill(skill,level))
-				if ohp < HealOwnerHP and MyState==IDLE_ST then
+				if ohp < healOwnerHP and MyState==IDLE_ST then
 					DoSkill(skill,5,myid) 
 				else
 					DoSkill(skill,4,myid)
@@ -2370,7 +2376,7 @@ function DoHealingTasks (myid)
 			end
 		end
 	end
-	if ohp < HealOwnerHP then
+	if ohp < healOwnerHP then
 		if GetV(V_SP,myid) > chaoticHealCostSp then
 			TraceAI("Using Healing skill "..FormatSkill(skill,level))
 			DoSkill(skill,level,GetV(V_OWNER,myid))
