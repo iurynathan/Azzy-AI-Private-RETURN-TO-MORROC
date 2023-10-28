@@ -168,7 +168,7 @@ SkillList[DIETER][MH_VOLCANIC_ASH ]=5
 
 
 
---SkillInfo[id]={name,range,SP cost,Cast Time (fixed),Cast Time (variable),Delay,targetmode,Duration,reuse delay)
+--SkillInfo[id]={name,range,SP cost,Cast Time (fixed),Cast Time (variable),Delay,targetMode,Duration,reuse delay)
 --SkillInfo[id][1]=name
 --SkillInfo[id][2]=range
 --SkillInfo[id][3]=sp cost
@@ -194,27 +194,27 @@ SkillInfo[S_ILLUSION_OF_CLAWS]={
 }
 
 SkillInfo[S_WARM_DEF] = {
-  "Warm Defense", --Skill Name
-  {0,0,0,0,0}, -- Range
-  {20,25,30,35,40}, -- SP Cost
-  {0,0,0,0,0}, -- Fixed cast (ms)
-  {0,0,0,0,0}, -- Variable cast (ms)
-  {4000,4000,4000,4000,4000}, -- Delay (ms)
-  0, -- Target mode (0 = self targeted, 1 = enemy targeted, 2 = ground targeted) 
-  {2000,4000,6000,8000,10000}, -- Duration (ms)
-  {8000,8000,8000,8000,8000}, -- Reuse Delay (ms)
+  "Warm Defense", --[1] Skill Name
+  {0,0,0,0,0}, --[2] Range
+  {20,25,30,35,40}, --[3] SP Cost
+  {0,0,0,0,0}, -- [4] Fixed cast (ms)
+  {0,0,0,0,0}, -- [5] Variable cast (ms)
+  {4000,4000,4000,4000,4000}, -- [6] Delay (ms)
+  0, -- [7] Target mode (0 = self targeted, 1 = enemy targeted, 2 = ground targeted) 
+  {2000,4000,6000,8000,10000}, -- [8] Duration (ms)
+  {8000,8000,8000,8000,8000}, -- [9] Reuse Delay (ms)
 }
-SkillInfo[S_CHAOTIC_HEAL]={"Chaotic Heal",{0,0,0,0,0},{75,80,85,90,95},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},0,{0,0,0,0,0},{400,400,400,400,400}}
+SkillInfo[S_CHAOTIC_HEAL]={"Chaotic Heal",{0,0,0,0,0},{2, 2, 2, 2, 2},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},0,{0,0,0,0,0},{400,400,400,400,400}}
 SkillInfo[S_BODY_DOUBLE]={
   "Body Double", --Skill Name
   {0,0,0,0,0}, -- Range
-  {20,25,30,35,40}, -- SP Cost
-  {1000,1000,1000,1000,1000},
-  {0,0,0,0,0}, -- Fixed cast (ms)
+  {20,40,60,80,100}, -- SP Cost
+  {1000,1000,1000,1000,1000}, -- Fixed cast (ms)
   {0,0,0,0,0}, -- Variable cast (ms)
+  {0,0,0,0,0}, -- Delay (ms)
   0, -- Target mode (0 = self targeted, 1 = enemy targeted, 2 = ground targeted) 
   {10000,20000,30000,40000,50000}, -- Duration (ms)
-  {9500,19500,29500,39500,49500} -- Reuse Delay (ms)
+  {17500,17500,24500,34500,44500} -- Reuse Delay (ms)
 }
 SkillInfo[S_ILLUSION_OF_BREATH] = {
   "Illusion of Breath",  --Skill Name

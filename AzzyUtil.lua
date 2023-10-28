@@ -2442,69 +2442,60 @@ end
 
 function DoSkill(skill, level, target, mode, targx, targy)
 	TraceAI("doskill called skill:"..skill.."level:"..level.."target"..target)
+
 	if skill==0 or level==0 or skill==nil or level==nil then
 		logappend("AAI_ERROR","doskill called skill:"..skill.."level:"..level.."target"..target.."mode"..mode.."state "..MyState.."pstate "..MyPState)
 		return 0
 	end
-	targetmode=GetSkillInfo(skill, 7)
-	if skill==HFLI_SBR44 and AllowSBR44~=1 then
-		logappend("AAI_ERROR","Attempt to use SBR 44 blocked. If you really want to use this, set AllowSBR44 = 1 in H_Extra")
-	elseif targetmode==0 then
-		SkillObject(MyID,level,skill,MyID)
-	elseif targetmode==1 then
-		SkillObject(MyID,level,skill,target)
-	elseif targetmode==2 then
-		if targx == nil then
-			x,y=GetV(V_POSITION,target)
-			SkillGround(MyID,level,skill,x,y)
+	targetMode = GetSkillInfo(skill, 7)
+
+	if (targetMode == 0) then
+		SkillObject(MyID, level, skill, MyID)
+	elseif (targetMode == 1) then
+		SkillObject(MyID, level, skill, target)
+	elseif (targetMode == 2) then
+		if (targx == nil) then
+			positionX, positionY = GetV(V_POSITION,target)
+			SkillGround(MyID, level, skill, positionX, positionY)
 		else
-			SkillGround(MyID,level,skill,targx,targy)
+			SkillGround(MyID, level, skill, targx, targy)
 		end
 	end
-	if mode~=nil then
-		if mode > 0 then
-			CastSkillMode=mode
-			CastSkill=skill
-			CastSkillLevel=level
-			CastSkillTime=GetTick()
-			CastSkillState=0
+	if (mode ~= nil) then
+		if (mode > 0) then
+			CastSkillMode = mode
+			CastSkill = skill
+			CastSkillLevel = level
+			CastSkillTime = GetTick()
+			CastSkillState = 0
 			logappend("AAI_SKILLFAIL", "Mode set "..mode.." skill "..skill.." level "..level)
 		else --mode is negative, call the plugin mode handler. 
 			DoSkillHandleMode(skill,level,target,mode,targx,targy)
 			logappend("AAI_SKILLFAIL", "Mode set "..mode.." skill "..skill.." level "..level)
 		end
 	end
-	local t=GetTick();
-	delay=AutoSkillDelay + GetSkillInfo(skill,4,level)+GetSkillInfo(skill,5,level)*0.5
-	AutoSkillCastTimeout=delay+t
-	if AutoSkillCooldown[skill]~=nil then
-		AutoSkillCooldown[skill]=t+GetSkillInfo(skill,9,level)+delay
-	elseif (skill==MH_VOLCANIC_ASH) then --handle the three ash timeouts
-		if (AshTimeout[1] < t) then
-			AshTimeout[1]=t+GetSkillInfo(skill,9,level)+delay
-		elseif (AshTimeout[2] < t) then
-			AshTimeout[2]=t+GetSkillInfo(skill,9,level)+delay
-		else 
-			AshTimeout[3]=t+GetSkillInfo(skill,9,level)+delay
-		end
-	end
-	delay = delay + GetSkillInfo(skill,6,level)
-	AutoSkillTimeout=t+delay
-	if AutoSkillCooldown[skill]~=nil then
-		TraceAI("DoSkill: "..skill.." level:"..level.." target:"..target.." mode:"..targetmode.." delay "..delay.." cooldown: "..AutoSkillCooldown[skill]-GetTick())
-	else
-		TraceAI("DoSkill: "..skill.." level:"..level.." target:"..target.." mode:"..targetmode.." delay "..delay)
-	end
-	delay = delay + GetSkillInfo(skill,6,level)
-	AutoSkillTimeout=delay
-	if AutoSkillCooldown[skill]~=nil then
-		TraceAI("DoSkill: "..skill.." level:"..level.." target:"..target.." mode:"..targetmode.." delay "..delay.." cooldown: "..AutoSkillCooldown[skill]-GetTick())
-	else
-		TraceAI("DoSkill: "..skill.." level:"..level.." target:"..target.." mode:"..targetmode.." delay "..delay)
-	end
+	local timeTick = GetTick();
+	local fixedCastSkill = GetSkillInfo(skill, 4, level)
+	local variableCastSkill = GetSkillInfo(skill, 5, level)
+	local skillDelay = GetSkillInfo(skill, 6, level)
+	local skillReuseDelay = GetSkillInfo(skill, 9, level)
+	delay = AutoSkillDelay + fixedCastSkill + variableCastSkill * 0.5
+	AutoSkillCastTimeout = delay + timeTick
 
-	TraceAI("DoSkill: "..skill.." level:"..level.." target:"..target.." mode:"..targetmode.." delay "..delay)
-	logappend("AAI_SKILLFAIL", "DoSkill: "..skill.." level:"..level.." target:"..target.." mode:"..targetmode.." delay "..delay)
+	if (AutoSkillCooldown[skill] ~= nil) then
+		AutoSkillCooldown[skill] = timeTick + skillReuseDelay + delay
+	end
+	delay = delay + skillDelay
+	AutoSkillTimeout = timeTick + delay
+
+	if (AutoSkillCooldown[skill] ~= nil) then
+		TraceAI("DoSkill: "..skill.." level:"..level.." target:"..target.." mode:"..targetMode.." delay "..delay.." cooldown: "..AutoSkillCooldown[skill]-GetTick())
+	else
+		TraceAI("DoSkill: "..skill.." level:"..level.." target:"..target.." mode:"..targetMode.." delay "..delay)
+	end
+	TraceAI("DoSkill: "..skill.." level:"..level.." target:"..target.." mode:"..targetMode.." delay "..delay)
+	logappend("AAI_SKILLFAIL", "DoSkill: "..skill..", level: "..level..", target: "..target..", mode: "..targetMode..", delay: "..delay.. ", cooldown: "..AutoSkillCooldown[skill]-GetTick())
+
 	return
 end
 
