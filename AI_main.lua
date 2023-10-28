@@ -88,26 +88,12 @@ function doInit(myid)
 	end
 	OnInit()
 	if AggressiveRelogTracking~=1 then
-		MagTimeout=MagTimeout+500
-		SOffensiveTimeout=SOffensiveTimeout+500
-		SDefensiveTimeout=SDefensiveTimeout+500
-		SOwnerBuffTimeout=SOwnerBuffTimeout+500
 		GuardTimeout=GuardTimeout+500
 		QuickenTimeout=QuickenTimeout+500
-		OffensiveOwnerTimeout	= OffensiveOwnerTimeout+500
-		DefensiveOwnerTimeout	= DefensiveOwnerTimeout+500
-		OtherOwnerTimeout		= OtherOwnerTimeout+500
 	else
 		timelag=LastAITime_ART-GetTick()
-		MagTimeout=MagTimeout+timelag
-		SOffensiveTimeout=SOffensiveTimeout+timelag
-		SDefensiveTimeout=SDefensiveTimeout+timelag
-		SOwnerBuffTimeout=SOwnerBuffTimeout+timelag
 		GuardTimeout=GuardTimeout+timelag
 		QuickenTimeout=QuickenTimeout+timelag
-		OffensiveOwnerTimeout	= OffensiveOwnerTimeout+timelag
-		DefensiveOwnerTimeout	= DefensiveOwnerTimeout+timelag
-		OtherOwnerTimeout		= OtherOwnerTimeout+timelag
 	end
 	AdjustCapriceLevel()
 	UpdateTimeoutFile()
@@ -750,15 +736,6 @@ function	OnCHASE_ST ()
 			EnemyPosX = {0,0,0,0,0,0,0,0,0,0}
 			EnemyPosY = {0,0,0,0,0,0,0,0,0,0}
 		end
-	elseif ((MySkill==MH_TINDER_BREAKER or MySkill==MH_EQC or MySkill==MH_CBC) and EleanorMode==0) or ((MySkill==MH_SONIC_CRAW or MySkill==MH_SILVERVEIN_RUSH or MySkill==MH_MIDNIGHT_FRENZY) and EleanorMode==1) then
-		if EleanorDoNotSwitchMode == 1 then 
-			TraceAI("Was told to use "..FormatSkill(MySkill,MyLevel).." but am in wrong mode for it, and EleanorDoNotSwitchMode==1")
-			logappend("AAI_ERROR","Was told to use "..FormatSkill(MySkill,MyLevel).." but am in wrong mode for it, and EleanorDoNotSwitchMode==1")
-		else
-			if AutoSkillTimeout < GetTick() then
-				DoSkill(MH_STYLE_CHANGE,1,MyID,8)
-			end
-		end
 	end
 	if (true == IsInAttackSight(MyID,MyEnemy,MySkill,MySkillLevel)) then  -- ENEMY_INATTACKSIGHT_IN
 		MyState = ATTACK_ST
@@ -1193,10 +1170,6 @@ function OnATTACK_ST ()
 	if (UseSkillOnly ~= 1) then
 		Attack (MyID,MyEnemy)
 		TraceAI("Normal attack vs: "..MyEnemy)
-		if GetV(V_HOMUNTYPE,MyID) == ELEANOR and (EleanorDoNotSwitchMode==1 and EleanorMode==-1) or EleanorMode==1  then
-			MySpheres = math.max(math.min(10,MySpheres+1/SphereTrackFactor),0)
-			UpdateTimeoutFile()
-		end
 	end
 	-- else
 	if (MySkill ~=0) then
@@ -2216,93 +2189,7 @@ function DoAutoBuffs(buffmode)
 	if GetTick() < AutoSkillTimeout then
 		return 1
 	end
-	if buffmode==2 then -- Berserk mode only buffs
-		if BerserkMode~=1 then
-			return 1
-		end
-	end
 	TraceAI("DoAutoBuffs"..buffmode)
-	if OffensiveOwnerTimeout ~=-1 then
-		TraceAI("offensive owner ~= -1")
-		if (GetTick() > OffensiveOwnerTimeout) then
-			local skill,level,opt = GetOffensiveOwnerSkill(MyID)
-			TraceAI("timeout ok "..opt.." "..FormatSkill(skill,level).." "..buffmode)
-			if (skill <= 0) then
-				OffensiveOwnerTimeout = -1
-			elseif level==0 or opt~=buffmode then
-				-- skill in cooldown
-			elseif (GetSkillInfo(skill,3,level) <= GetV(V_SP,MyID)) then
-				MyBuffSPCosts["OffensiveOwner"]=GetSkillInfo(skill,3,level)
-				if MyASAPBuffs[3]==skill and buffmode==3 then
-					OffensiveOwnerTimeout = GetTick()+20000 --We're stuck in an ASAP loop!
-					logappend("AAI_ERROR","ASAP buff attempt canceled, we were just trying to do this and it didnt work, delaying 20 seconds "..FormatSkill(skill,level))
-				else
-					MyPState = MyState
-					MyState = PROVOKE_ST
-					MyPEnemy = GetV(V_OWNER,MyID)
-					MyPSkill = skill
-					MyPSkillLevel = level
-					MyPMode = 11
-					TraceAI(MyState.." --> PROVOKE_ST to use "..FormatSkill(skill,level))
-					return OnPROVOKE_ST()
-				end
-			end
-		end
-	end
-	if DefensiveOwnerTimeout ~=-1 then
-		TraceAI("defensive owner ~= -1")
-		if (GetTick() > DefensiveOwnerTimeout)  and (DefensiveBuffOwnerMobbed==0 or (DefensiveBuffOwnerMobbed <= GetAggroCount(GetV(V_OWNER,MyID)) and HPPercent(GetV(V_OWNER,MyID)) < DefensiveBuffOwnerHP)) then
-			local skill,level,opt = GetDefensiveOwnerSkill(MyID)
-			TraceAI("timeout ok "..opt.." "..FormatSkill(skill,level).." "..buffmode)
-			if (skill <= 0) then
-				DefensiveOwnerTimeout = -1
-			elseif level==0 or opt~=buffmode then
-				-- skill in cooldown
-			elseif (GetSkillInfo(skill,3,level) <= GetV(V_SP,MyID)) then
-				MyBuffSPCosts["DefensiveOwner"]=GetSkillInfo(skill,3,level)
-				if MyASAPBuffs[3]==skill and buffmode==3 then
-					DefensiveOwnerTimeout = GetTick()+20000 --We're stuck in an ASAP loop!
-					logappend("AAI_ERROR","ASAP buff attempt canceled, we were just trying to do this and it didnt work, delaying 20 seconds "..FormatSkill(skill,level))
-				else
-					MyPState = MyState
-					MyState = PROVOKE_ST
-					MyPEnemy = GetV(V_OWNER,MyID)
-					MyPSkill = skill
-					MyPSkillLevel = level
-					MyPMode = 12
-					TraceAI(MyState.." --> PROVOKE_ST to use "..FormatSkill(skill,level))
-					return OnPROVOKE_ST()
-				end
-			end
-		end
-	end
-	if OtherOwnerTimeout ~=-1 then
-		TraceAI("other owner ~= -1 "..GetTick().." "..OtherOwnerTimeout)
-		if (GetTick() > OtherOwnerTimeout) then
-			local skill,level,opt = GetOtherOwnerSkill(MyID)
-			TraceAI("timeout ok "..opt.." "..FormatSkill(skill,level).." "..buffmode)
-			if (skill <= 0) then
-				OtherOwnerTimeout = -1
-			elseif level==0 or opt~=buffmode then
-				-- skill in cooldown
-			elseif (GetSkillInfo(skill,3,level) <= GetV(V_SP,MyID)) then
-				MyBuffSPCosts["OtherOwner"]=GetSkillInfo(skill,3,level)
-				if MyASAPBuffs[3]==skill and buffmode==3 then
-					OtherOwnerTimeout = GetTick()+20000 --We're stuck in an ASAP loop!
-					logappend("AAI_ERROR","ASAP buff attempt canceled, we were just trying to do this and it didnt work, delaying 20 seconds "..FormatSkill(skill,level))
-				else
-					MyPState = MyState
-					MyState = PROVOKE_ST
-					MyPEnemy = GetV(V_OWNER,MyID)
-					MyPSkill = skill
-					MyPSkillLevel = level
-					MyPMode = 13
-					TraceAI(MyState.." --> PROVOKE_ST to use "..FormatSkill(skill,level))
-					return OnPROVOKE_ST()
-				end
-			end
-		end
-	end
 
 	if (UseOffensiveBuff == buffmode and QuickenTimeout ~= -1) then
 		if (GetTick() > QuickenTimeout) then
@@ -2310,7 +2197,7 @@ function DoAutoBuffs(buffmode)
 
 			if (skill <= 0) then
 				QuickenTimeout = -1
-			elseif level == 0 then
+			elseif (level == 0) then
 				-- skill in cooldown
 			elseif (GetSkillInfo(skill, 3, level) <= GetV(V_SP, MyID)) then
 				DoSkill(skill, level, MyID, 2)
@@ -2331,7 +2218,7 @@ function DoAutoBuffs(buffmode)
 			elseif (level == 0) then
 				-- skill in cooldown
 			elseif (GetSkillInfo(skill, 3, level) <= GetV(V_SP, MyID)) then
-				DoSkill(skill, level, MyID, 2)
+				DoSkill(skill, level, MyID, 1)
 				GuardTimeout = AutoSkillCastTimeout + GetSkillInfo(skill, 9, level)
 				UpdateTimeoutFile()
 
@@ -2394,7 +2281,7 @@ function UpdateTimeoutFile()
 		OutFile=io.open(ConfigPath.."data/M_"..GetV(V_OWNER,MyID).."Timeouts.lua","w")
 	end
 	if OutFile~=nil then
-		OutFile:write("MagTimeout="..TimeoutConv(MagTimeout).."\nSOffensiveTimeout="..TimeoutConv(SOffensiveTimeout).."\nSDefensiveTimeout="..TimeoutConv(SDefensiveTimeout).."\nSOwnerBuffTimeout="..TimeoutConv(SOwnerBuffTimeout).."\nGuardTimeout="..TimeoutConv(GuardTimeout).."\nQuickenTimeout="..TimeoutConv(QuickenTimeout).."\nOffensiveOwnerTimeout="..TimeoutConv(OffensiveOwnerTimeout).."\nDefensiveOwnerTimeout="..TimeoutConv(DefensiveOwnerTimeout).."\nOtherOwnerTimeout="..TimeoutConv(OtherOwnerTimeout).."\nShouldStandby="..ShouldStandbyx.."\nRegenTick[1]="..RegenTick[1].."\nMySpheres="..MySpheres.."\nEleanorMode="..EleanorMode)
+		OutFile:write("GuardTimeout="..TimeoutConv(GuardTimeout).."\nQuickenTimeout="..TimeoutConv(QuickenTimeout).."\nShouldStandby="..ShouldStandbyx.."\nRegenTick[1]="..RegenTick[1])
 		OutFile:close()
 	else
 		TraceAI("Failed to update timeout file")
@@ -2426,12 +2313,6 @@ function OnPROVOKE_ST()
 			ProvokeOwnerTimeout = GetTick()+GetSkillInfo(MyPSkill,8,MyPSkillLevel)
 		elseif MyPMode== 9 then
 			SightTimeout = GetTick()+GetSkillInfo(MyPSkill,8,MyPSkillLevel)
-		elseif MyPMode== 11 then
-			OffensiveOwnerTimeout = GetTick()+GetSkillInfo(MyPSkill,8,MyPSkillLevel)
-		elseif MyPMode== 12 then
-			DefensiveOwnerTimeout = GetTick()+GetSkillInfo(MyPSkill,8,MyPSkillLevel)
-		elseif MyPMode== 13 then
-			OtherOwnerTimeout = GetTick()+GetSkillInfo(MyPSkill,8,MyPSkillLevel)
 		elseif IsPlayer(MyPMode) then -- to detect painkiller-friends, in which case PMode is the id of the friend
 			PKFriendsTimeout[MyPMode]=GetTick()+GetSkillInfo(MyPSkill,8,MyPSkillLevel)	
 		end
@@ -2443,9 +2324,7 @@ function OnPROVOKE_ST()
 		return
 	elseif SkillObjectCMDTimeout>SkillObjectCMDLimit then
 		TraceAI("PROVOKE_ST -> IDLE_ST Couldn't get into range to provoke/AoE owner")
-		if (MyPMode==12) then
-			DefensiveOwnerTimeout=GetTick()+20000
-		elseif (MyPMode==7) then
+		if (MyPMode==7) then
 			ProvokeOwnerTimeout=GetTick()+10000
 		end
 		if MyPState~=PROVOKE_ST then
@@ -2864,7 +2743,7 @@ end
 
 function FailSkillUse(mode) 
 	local modex=mode
-	if IsPlayer(mode)==1 then
+	if IsPlayer(mode)~=1 then
 		mode=13
 	end
 	if SkillFailCount[mode]==nil then 
@@ -2877,26 +2756,12 @@ function FailSkillUse(mode)
 			GuardTimeout=1
 		elseif mode==2 then
 			QuickenTimeout=1
-		elseif mode==3 then
-			MagTimeout=1
-		elseif mode==4 then
-			SOffensiveTimeout=1
-		elseif mode==5 then
-			SDefensiveTimeout=1
-		elseif mode==6 then
-			SOwnerBuffTimeout=1
 		elseif mode==7 then
 			SightTimeout=1
 		elseif mode==9 then
 			ProvokeOwnerTimeout=1
 		elseif mode==10 then
 			SteinWandTimeout = 1
-		elseif mode==11 then
-			OffensiveOwnerTimeout = 1
-		elseif mode==12 then
-			DefensiveOwnerTimeout = 1
-		elseif mode==13 then
-			OtherOwnerTimeout = 1
 		elseif IsPlayer(modex) then
 			--logappend("AAI_PKF","skill failed on"..mode)
 			PKFriendsTimeout[modex]=1
@@ -3006,37 +2871,9 @@ function AI(myid)
 		logappend("AAI_ERROR","Guard timeout was "..GuardTimeout.." time is "..GetTick())
 		GuardTimeout=1
 	end
-	if MagTimeout-GetTick() > 350000 then
-		logappend("AAI_ERROR","Mag timeout was "..MagTimeout.." time is "..GetTick())
-		MagTimeout=1
-	end
 	if QuickenTimeout-GetTick() > 1205000 then
 		logappend("AAI_ERROR","Quicken timeout was "..QuickenTimeout.." time is "..GetTick())
 		QuickenTimeout=1
-	end
-	if SOffensiveTimeout-GetTick() > 350000 then
-		logappend("AAI_ERROR","Homun S offensive timeout was "..SOffensiveTimeout.." time is "..GetTick())
-		SOffensiveTimeout=1
-	end
-	if SDefensiveTimeout-GetTick() > 350000 then
-		logappend("AAI_ERROR","Homun S defensive timeout was "..SDefensiveTimeout.." time is "..GetTick())
-		SDefensiveTimeout=1
-	end
-	if SOwnerBuffTimeout-GetTick() > 6000000 then
-		logappend("AAI_ERROR","Homun S owner buff timeout was "..SOwnerBuffTimeout.." time is "..GetTick())
-		SOwnerBuffTimeout=1
-	end
-	if OffensiveOwnerTimeout-GetTick() > 6000000 then
-		logappend("AAI_ERROR","Offensive owner buff timeout was "..OffensiveOwnerTimeout.." time is "..GetTick())
-		OffensiveOwnerTimeout=1
-	end
-	if DefensiveOwnerTimeout-GetTick() > 6000000 then
-		logappend("AAI_ERROR","Defensive owner buff timeout was "..DefensiveOwnerTimeout.." time is "..GetTick())
-		DefensiveOwnerTimeout=1
-	end
-	if OtherOwnerTimeout-GetTick() > 6000000 then
-		logappend("AAI_ERROR","Other owner buff timeout was "..OtherOwnerTimeout.." time is "..GetTick())
-		OtherOwnerTimeout=1
 	end
 	if MyMaxSP~=GetV(V_MAXSP,MyID) then
 		AdjustCapriceLevel()
@@ -3300,11 +3137,6 @@ function AI(myid)
 				if LastAIDelay > 220 then
 					--Skill cast successfully
 					if CastSkillMode==8 then
-						if EleanorMode==1 then
-							EleanorMode=0
-						else
-							EleanorMode=1
-						end
 						UpdateTimeoutFile()
 					end
 					TraceAI("Delay watcher: Skill use successful detected by delay - mode "..CastSkillMode.." skill "..FormatSkill(CastSkill,CastSkillLevel).." LastAIDelay "..LastAIDelay)
@@ -3336,11 +3168,6 @@ function AI(myid)
 				if LastAIDelay > 220 then
 					--Skill cast successfully
 					if CastSkillMode==8 then
-						if EleanorMode==1 then
-							EleanorMode=0
-						else
-							EleanorMode=1
-						end
 						UpdateTimeoutFile()
 					end
 					TraceAI("Delay watcher: Skill use successful - mode "..CastSkillMode.." skill "..FormatSkill(CastSkill,CastSkillLevel).." LastAIDelay "..LastAIDelay)
@@ -3355,6 +3182,7 @@ function AI(myid)
 		end
 		-- sp watcher
 		local skillOldSpCost = GetSkillInfo(castSkillOld, 3, castSkillOldlvl)
+		logappend("AAI_CostSP", "SP: "..sp..", MyLaspSP: "..MyLastSP..", RegenTick: "..RegenTick[1])
 		if (sp - MyLastSP == RegenTick[1] - skillOldSpCost or MyLastSP - sp == skillOldSpCost) then
 			--if IsHomun(myid)==0 then
 				TraceAI("SP watcher: Skill use successful - mode "..CastSkillMode.." skill "..FormatSkill(CastSkill,CastSkillLevel).." LastAIDelay "..LastAIDelay)
@@ -3398,18 +3226,7 @@ function AI(myid)
 		end
 	end
 	if clearcastskill==1 then
-		if (CastSkill==MH_CBC or CastSkill==MH_EQC or CastSkill==MH_TINDER_BREAKER) then
-			EleanorMode=0 --grappler
-			UpdateTimeoutFile()
-		elseif (CastSkill==MH_SONIC_CLAW or CastSkill==MH_SILVERVEIN_RUSH or CastSkill==MH_MIDNIGHT_FRENZY) then
-			EleanorMode=1
-			UpdateTimeoutFile()
-		end
 		SkillFailCount[CastSkillMode]=0
-		--LavaSlideMode=constant
-		if (LavaSlideMode==4 and CastSkill==MH_LAVA_SLIDE) then
-			SightTimeout=GetTick()+500
-		end
 		CastSkill=0
 		CastSkillLevel=0
 		CastSkillMode=0
@@ -3465,25 +3282,8 @@ function AI(myid)
 	if (GetTick() < (MyStart + SpawnDelay)) then
 		return
 	end
-	if OldHomunType==AMISTR and UseCastleDefend ==1 then
-		if GetTick() > AutoSkillTimeout then
-			local mytargetweight =0
-			local ownertargetweight =0
-			for k,v in pairs(Targets) do 
-				if v[2]==1 then
-					mytargetweight=mytargetweight+GetTact(TACT_WEIGHT,k)
-				elseif v[2]==2 then
-					if GetV(V_TARGET,k)==GetV(V_OWNER,MyID) then
-						ownertargetweight=ownertargetweight+GetTact(TACT_WEIGHT,k)
-					end
-				end
-			end
-			if CastleDefendThreshold <= ownertargetweight and ownertargetweight > mytargetweight then
-				DoSkill(HAMI_CASTLE,5,MyID)
-			end
-		end
-	end
 	object = SelectEnemy(GetEnemyList(MyID,-2))
+
 	if (object~=0 and object ~= MyEnemy and MyState~=FOLLOW_ST) then
 		MyEnemy=object
 		MyState=CHASE_ST
@@ -3556,7 +3356,7 @@ function AI(myid)
 	--TraceAI("SP tracking: Time: "..GetTick().." last moved: "..LastMovedTime.." last sp time "..LastSPTime)
 	if (LagReduction) then
 		if LagReductionCD > 0 then
-			LagReductionCD=LagReductionCD-1
+			LagReductionCD = LagReductionCD-1
 		end
 	end
 	

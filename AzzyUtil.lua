@@ -1275,7 +1275,7 @@ function IsInAttackSight (myid,target,skill,level)
 		skill=MySkill
 		level=MySkillLevel
 	elseif (level==nil) then
-		logappend("AAI_ERROR","IsInAttackSight called with nil level but skill is not nil. State:"..MyState.." skill "..skill)
+		logappend("AAI_ERROR","IsInAttackSight called with nil level but skill is not nil. State:"..STATE_NAME[MyState].." skill "..skill)
 	end
 	local x1,y1 = GetV (V_POSITION,myid)
 	local x2,y2 = GetV (V_POSITION,target)
@@ -1296,7 +1296,7 @@ end
 function AttackRange(myid,skill,level)
 	if (skill==nil or level== nil) then
 		if skill==nil or level==nil then
-			logappend("AAI_ERROR","AttackRange called with invalid arguments State:"..MyState.." MySkill "..MySkill.." MySkillLevel"..MySkillLevel.." skill: "..formatval(skill).." level: "..formatval(level))
+			logappend("AAI_ERROR","AttackRange called with invalid arguments State:"..STATE_NAME[MyState].." MySkill "..MySkill.." MySkillLevel"..MySkillLevel.." skill: "..formatval(skill).." level: "..formatval(level))
 		end
 		skill=MySkill
 		level=MySkillLevel
@@ -1323,7 +1323,7 @@ function AttackRange(myid,skill,level)
 		end
 	end
 	if level == nil then
-		logappend("AAI_ERROR","AttackRange called with nil level, skill = "..skill.." "..MyState)
+		logappend("AAI_ERROR","AttackRange called with nil level, skill = "..skill.." "..STATE_NAME[MyState])
 	end
 	TraceAI("Attack Sight - skill:"..skill.."level: "..level.." Range:"..a) 
 	return a
@@ -1772,79 +1772,6 @@ function GetSAtkSkill(myid)
 	local skill = 0
 	local level = 0
 	if (IsHomun(myid)==1) then
-		if level ~=0 then
-			return skill,level
-		end
-	end
-	return 0,0
-end
-
-function GetComboSkill(myid)
-	local skill = 0
-	local level = 0
-	if (IsHomun(myid)==1) then
-		htype=GetV(V_HOMUNTYPE,myid)
-		if htype==ELEANOR then
-			if EleanorMode==0 or EleanorDoNotSwitchMode==1 then
-				if ComboSCTimeout > GetTick() and MySpheres >= AutoComboSpheres then
-					skill=MH_SILVERVEIN_RUSH
-					if EleanorSilverveinLevel==nil then
-						level=5
-					else
-						level=EleanorSilverveinLevel
-					end
-				elseif ComboSVTimeout > GetTick()  then
-					skill=MH_MIDNIGHT_FRENZY
-					if EleanorMidnightLevel==nil then
-						level=5
-					else
-						level=EleanorMidnightLevel
-					end
-				end
-			end
-		end
-		if level ~=0 then
-			return skill,level
-		end
-	end
-	return 0,0
-end
-
-function GetGrappleSkill(myid)
-	local skill = 0
-	local level = 0
-	if (IsHomun(myid)==1) then
-		htype=GetV(V_HOMUNTYPE,myid)
-		if htype==ELEANOR and MySpheres >= AutoComboSpheres then
-			if EleanorMode==1 or EleanorDoNotSwitchMode==1 then
-				if ComboSCTimeout > GetTick() then
-					if MySpheres >= AutoComboSpheres -1 then
-						skill=MH_CBC
-						if EleanorCBCLevel==nil then
-							level=5
-						else
-							level=EleanorCBCLevel
-						end
-					end
-				elseif ComboSVTimeout > GetTick() then
-					if MySpheres >= AutoComboSpheres -1 then
-						skill=MH_EQC
-						if EleanorEQCLevel==nil then
-							level=5
-						else
-							level=EleanorEQCLevel
-						end
-					end
-				elseif MySpheres >= AutoComboSpheres then
-					skill=MH_TINDER_BREAKER
-					if EleanorTinderBreakerLevel==nil then
-						level=5
-					else
-						level=EleanorTinderBreakerLevel
-					end				
-				end
-			end
-		end
 		if level ~=0 then
 			return skill,level
 		end
@@ -2327,17 +2254,13 @@ function GetTargetedSkills(myid)
 	Mainatk={MAIN_ATK,s,l}
 	s,l=GetSAtkSkill(myid)
 	Satk={S_ATK,s,l}
-	s,l=GetComboSkill(myid)
-	ComboAtk={COMBO_ATK,s,l}
-	s,l=GetGrappleSkill(myid)
-	GrappleAtk={GRAPPLE_ATK,s,l}
 	s,l=GetMobSkill(myid)
 	Mobatk={MOB_ATK,s,l}
 	s,l=GetDebuffSkill(myid)
 	Debuffatk={DEBUFF_ATK,s,l}
 	s,l=GetMinionSkill(myid)
 	Minionatk={MINION_ATK,s,l}
-	result={Mainatk,Satk,ComboAtk,GrappleAtk,Mobatk,Debuffatk,Minionatk}
+	result={Mainatk,Satk,Mobatk,Debuffatk,Minionatk}
 	return result
 end
 
@@ -2444,7 +2367,7 @@ function DoSkill(skill, level, target, mode, targx, targy)
 	TraceAI("doskill called skill:"..skill.."level:"..level.."target"..target)
 
 	if skill==0 or level==0 or skill==nil or level==nil then
-		logappend("AAI_ERROR","doskill called skill:"..skill.."level:"..level.."target"..target.."mode"..mode.."state "..MyState.."pstate "..MyPState)
+		logappend("AAI_ERROR","doskill called skill:"..skill.."level:"..level.."target"..target.."mode"..mode.."state "..STATE_NAME[MyState].."pstate "..MyPState)
 		return 0
 	end
 	targetMode = GetSkillInfo(skill, 7)
@@ -2638,9 +2561,9 @@ function logappend (filename,message)
 		outfile = io.open("./"..filename..".log", "a")
 		outfile:seek("end")
 		if filename=="AAI_SKILLFAIL" then
-			outfile:write(os.date("%c").." ("..GetTick()..") "..TypeString..MyState.."\t"..message.."\n")
+			outfile:write(os.date("%c").." ("..GetTick()..") "..TypeString..STATE_NAME[MyState].."\t"..message.."\n")
 		else
-			outfile:write(os.date("%c").." "..TypeString..MyState.."\t"..message.."\n")
+			outfile:write(os.date("%c").." "..TypeString..STATE_NAME[MyState].."\t"..message.."\n")
 		end
 		outfile:close()
 	end

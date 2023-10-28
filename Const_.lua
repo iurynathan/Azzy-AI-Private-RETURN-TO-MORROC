@@ -385,6 +385,31 @@ PROVOKE_ST				= 105
 FRIEND_CROSS_ST				= 106
 FRIEND_CIRCLE_ST			= 107	
 MOVE_CMD_HOLD_ST			= 108
+
+STATE_NAME = {
+  [IDLE_ST] = ' - IDLE_ST',
+  [FOLLOW_ST] = ' - FOLLOW_ST',
+  [CHASE_ST] = ' - CHASE_ST',
+  [ATTACK_ST] = ' - ATTACK_ST',
+  [MOVE_CMD_ST] = ' - MOVE_CMD_ST',
+  [STOP_CMD_ST] = ' - STOP_CMD_ST',
+  [ATTACK_OBJECT_CMD_ST] = ' - ATTACK_OBJECT_CMD_ST',
+  [ATTACK_AREA_CMD_ST] = ' - ATTACK_AREA_CMD_ST',
+  [PATROL_CMD_ST] = ' - PATROL_CMD_ST',
+  [HOLD_CMD_ST] = ' - HOLD_CMD_ST',
+  [SKILL_OBJECT_CMD_ST] = ' - SKILL_OBJECT_CMD_ST',
+  [SKILL_AREA_CMD_ST] = ' - SKILL_AREA_CMD_ST',
+  [FOLLOW_CMD_ST] = ' - FOLLOW_CMD_ST',
+  [IDLEWALK_ST] = ' - IDLEWALK_ST',
+  [ORBITWALK_ST] = ' - ORBITWALK_ST',
+  [REST_ST] = ' - REST_ST',
+  [TANKCHASE_ST] = ' - TANKCHASE_ST',
+  [TANK_ST] = ' - TANK_ST',
+  [PROVOKE_ST] = ' - PROVOKE_ST',
+  [FRIEND_CROSS_ST] = ' - FRIEND_CROSS_ST',
+  [FRIEND_CIRCLE_ST] = ' - FRIEND_CIRCLE_ST',	
+  [MOVE_CMD_HOLD_ST] = ' - MOVE_CMD_HOLD_ST',
+}
 ----------------------------
 
 ------------------------------------------
@@ -428,18 +453,11 @@ AIInitTick=0
 --Autoskill timeout counters
 QuickenTimeout			= 0
 GuardTimeout			= 0
-MagTimeout			= 0
 SightTimeout			= 0
-SOffensiveTimeout		= 0
-SDefensiveTimeout		= 0
-SOwnerBuffTimeout		= 0
 SkillTimeout			= 0
 ProvokeOwnerTimeout		= 0
 ProvokeSelfTimeout		= 0
 SacrificeTimeout		= 0
-OffensiveOwnerTimeout	= 0
-DefensiveOwnerTimeout	= 0
-OtherOwnerTimeout		= 0
 SteinWandTimeout		= 0
 AutoSkillTimeout		= 0 --Cast time + delay timeout
 AttackTimeout			= 0 --for AttackTimeLimit
@@ -479,7 +497,6 @@ FriendCircleIter		= 0
 FriendCircleTimeout		= 0
 DoneInit				= 0
 AtkPosbugFixTimeout		= 0
-EleanorMode				= 0
 LastAITime_ART			= 0
 StickyX,StickyY			= 0,0
 MyLastSP				= 0

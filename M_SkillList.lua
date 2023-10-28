@@ -214,7 +214,7 @@ SkillList[PENGINEER][MER_BLESSING]=5
 SkillList[ISIS][MS_BASH]=10
 	
 
---SkillInfo[id]={name,range,SP cost,Cast Time (fixed),Cast Time (variable),Delay,targetmode,Duration,reuse delay)
+--SkillInfo[id]={name,range,SP cost,Cast Time (fixed),Cast Time (variable),Delay,targetMode,Duration,reuse delay)
 --SkillInfo[id][1]=name
 --SkillInfo[id][2]=range
 --SkillInfo[id][3]=sp cost

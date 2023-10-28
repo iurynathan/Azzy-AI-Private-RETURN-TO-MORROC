@@ -209,12 +209,12 @@ SkillInfo[S_BODY_DOUBLE]={
   "Body Double", --Skill Name
   {0,0,0,0,0}, -- Range
   {20,40,60,80,100}, -- SP Cost
-  {1000,1000,1000,1000,1000}, -- Fixed cast (ms)
+  {0,0,0,0,0}, -- Fixed cast (ms)
   {0,0,0,0,0}, -- Variable cast (ms)
   {0,0,0,0,0}, -- Delay (ms)
   0, -- Target mode (0 = self targeted, 1 = enemy targeted, 2 = ground targeted) 
   {10000,20000,30000,40000,50000}, -- Duration (ms)
-  {17500,17500,24500,34500,44500} -- Reuse Delay (ms)
+  {17500,17500,23000,30000,40000} -- Reuse Delay (ms)
 }
 SkillInfo[S_ILLUSION_OF_BREATH] = {
   "Illusion of Breath",  --Skill Name
