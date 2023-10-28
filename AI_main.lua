@@ -41,7 +41,7 @@ function doInit(myid)
 		logstring=logstring.."\nfailed to load timeouts for owner "..GetV(V_OWNER,MyID).." if this is the first time you've used this account with AzzyAI, disregard this message"
 	end
 	if GetV(V_SKILLATTACKRANGE,myid,S_CHAOTIC_HEAL) > 1 then -- it was a vani
-		OldHomunType=VANILMIRTH
+		OldHomunType=RAGING
 	end
 	if GetV(V_SKILLATTACKRANGE,myid,MH_XENO_SLASHER) == 1 then 
 		if UseEiraXenoSlasher and GetV(V_HOMUNTYPE,myid)==EIRA then
@@ -2342,8 +2342,22 @@ function DoAutoBuffs(buffmode)
 		end
 	end
 
-	if (UseOffensiveBuff == buffmode and QuickenTimeout ~=-1) then
-		if (GetTick() > QuickenTimeout) then
+	if (UseOffensiveBuff == buffmode and QuickenTimeout ~= -1) then
+		local skillGuard, levelSkillGuard = GetGuardSkill(MyID)
+		local quickenUse = 1
+
+		if (skillGuard >= 0) then
+			local delayWarmDef = GetSkillInfo(skillGuard, 6, levelSkillGuard)
+			local WarmDefCooldown = AutoSkillCooldown[skillGuard] - GetTick() - 4000
+
+			if (WarmDefCooldown > 0) then
+				quickenUse = 0
+				TraceAI("DoSkill: "..skillGuard.." level:"..level.." target:"..target.." delay: "..WarmDefCooldown.." message: "..skillInfo[skillGuard][1].." still on delay")
+				return
+			end
+		end
+
+		if (GetTick() > QuickenTimeout and quickenUse == 1) then
 			local skill, level = GetQuickenSkill(MyID)
 
 			if (skill <= 0) then
@@ -2352,7 +2366,7 @@ function DoAutoBuffs(buffmode)
 				-- skill in cooldown
 			elseif (GetSkillInfo(skill, 3, level) <= GetV(V_SP, MyID)) then
 				DoSkill(skill, level, MyID, 2)
-				QuickenTimeout = AutoSkillCastTimeout + GetSkillInfo(skill, 8, level)
+				QuickenTimeout = AutoSkillCastTimeout + GetSkillInfo(skill, 9, level)
 				UpdateTimeoutFile()
 
 				return
@@ -2360,7 +2374,7 @@ function DoAutoBuffs(buffmode)
 		end
 	end
 	
-	if (UseDefensiveBuff == buffmode and GuardTimeout ~=-1) then
+	if (UseDefensiveBuff == buffmode and GuardTimeout ~= -1) then
 		if (GetTick() > GuardTimeout) then
 			local skill, level = GetGuardSkill(MyID)
 
@@ -2370,7 +2384,7 @@ function DoAutoBuffs(buffmode)
 				-- skill in cooldown
 			elseif (GetSkillInfo(skill, 3, level) <= GetV(V_SP,MyID)) then
 				DoSkill(skill, level, MyID, 2)
-				GuardTimeout = AutoSkillCastTimeout + GetSkillInfo(skill, 8, level)
+				GuardTimeout = AutoSkillCastTimeout + GetSkillInfo(skill, 9, level)
 				UpdateTimeoutFile()
 
 				return

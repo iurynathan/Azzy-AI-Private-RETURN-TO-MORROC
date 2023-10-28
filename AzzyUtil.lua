@@ -1871,7 +1871,7 @@ function GetAtkSkill(myid)
 			else
 				level = illusionOfBreathLevel
 			end
-		elseif	(homunculuType == AGILE) then
+		elseif	(homunculuType == AGILE or homunculuType == RAGING) then
 			skill = S_ILLUSION_OF_CLAWS
 
 			if (illusionOfClawsLevel == 0) then
@@ -2214,7 +2214,6 @@ function GetGuardSkill(myid)
 	local skill = 0
 
 	if (IsHomun(myid) == 1) then
-		htype = GetV(V_HOMUNTYPE,myid)
 		skill = S_WARM_DEF
 
 		if (warmDefLevel == 0) then
