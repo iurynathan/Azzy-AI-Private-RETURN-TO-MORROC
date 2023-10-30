@@ -1790,7 +1790,7 @@ function GetAtkSkill(myid)
 		if (homunculuType == OCCULT) then
 			if (illusionOfBreathLevel > 0) then
 				skill = S_ILLUSION_OF_BREATH
-				
+
 				if (GetTick() < AutoSkillCooldown[skill]) then
 					level = 0
 					skill = 0
@@ -1805,10 +1805,10 @@ function GetAtkSkill(myid)
 				if (GetTick() < AutoSkillCooldown[skill]) then
 					level = 0
 					skill = 0
-				elseif (illusionOfBreathLevel == nil) then
+				elseif (illusionOfLightLevel == nil) then
 					level = 10
 				else
-					level = illusionOfBreathLevel
+					level = illusionOfLightLevel
 				end
 			end
 
