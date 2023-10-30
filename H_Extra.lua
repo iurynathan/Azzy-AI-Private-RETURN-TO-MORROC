@@ -12,11 +12,20 @@
 
 MyRoute={{0,0}}
 
-illusionOfClawsLevel = 5
-illusionOfBreathLevel = 10
-chaoticHealLevel = 5
-bodyDoubleLevel = 5
-warmDefLevel = 5
+
+illusionOfClawsLevel = 0
+illusionOfBreathLevel = 0
+-- Attention, "Illusion of Light" is only used by OCCULT.
+illusionOfLightLevel = 0
+chaoticHealLevel = 0
+bodyDoubleLevel = 0
+warmDefLevel = 0
+
+healConditions = {
+	[FOLLOW_ST] = 1,
+	[IDLE_ST] = 1,
+	['MAXHP'] = 95
+}
 
 FriendAttack={}			--Set these to 1 to have homun attack 
 				--the target of a friend/owner when the friend is:
@@ -52,10 +61,12 @@ Dr. Azzy takes no responsibility for your lua programming; I barely take respons
 
 
 --Uncomment the lines below to enable expanded logging. See documentation. 
---LogEnable["AAI_SKILLFAIL"]=1 
+LogEnable["AAI_SKILLFAIL"]=1
+-- LogEnable["AAI_CostSP"]=1
 --LogEnable["AAI_CLOSEST"]=1
 --LogEnable["AAI_DANCE"]=1
 --LogEnable["AAI_ACTORS"]=1
+-- LogEnable["AAI_MOBCOUNT"]=1
 
 --Uncomment this line to suppress AAI_ERROR logging. This should only be done as a stop-gap measure; if your AAI_ERROR log is filling up with messages, please report this to the developer. 
---LogEnable["AAI_ERROR"]=0
+LogEnable["AAI_ERROR"]=1

@@ -36,7 +36,6 @@ MER_BENEDICTION		= 8228
 MER_RECUPERATE		= 8229
 MER_MENTALCURE		= 8230
 MER_COMPRESS		= 8231
-MER_PROVOKE		= 8232
 MER_AUTOBERSERK		= 8233
 MER_DECAGI		= 8234
 MER_SCAPEGOAT		= 8235
@@ -185,7 +184,7 @@ SkillInfo[S_ILLUSION_OF_CLAWS]={
   "Illusion of Claws", --Skill Name
   {1,1,1,1,1}, -- Range
   {5,10,15,20,25}, -- SP Cost
-  {0,0,0,0,0}, -- Fixed cast (ms)
+  {100,100,100,100,100}, -- Fixed cast (ms)
   {0,0,0,0,0}, -- Variable cast (ms)
   {0,0,0,0,0}, -- Delay (ms)
   1, -- Target mode (0 = self targeted, 1 = enemy targeted, 2 = ground targeted) 
@@ -199,12 +198,24 @@ SkillInfo[S_WARM_DEF] = {
   {20,25,30,35,40}, --[3] SP Cost
   {0,0,0,0,0}, -- [4] Fixed cast (ms)
   {0,0,0,0,0}, -- [5] Variable cast (ms)
-  {4000,4000,4000,4000,4000}, -- [6] Delay (ms)
+  {4100,4100,4100,4100,4100}, -- [6] Delay (ms)
   0, -- [7] Target mode (0 = self targeted, 1 = enemy targeted, 2 = ground targeted) 
   {2000,4000,6000,8000,10000}, -- [8] Duration (ms)
   {8000,8000,8000,8000,8000}, -- [9] Reuse Delay (ms)
 }
-SkillInfo[S_CHAOTIC_HEAL]={"Chaotic Heal",{0,0,0,0,0},{2, 2, 2, 2, 2},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},0,{0,0,0,0,0},{400,400,400,400,400}}
+
+SkillInfo[S_CHAOTIC_HEAL]={
+  "Chaotic Heal",
+  {0,0,0,0,0},
+  {50, 50, 50, 50, 50},
+  {0,0,0,0,0},
+  {0,0,0,0,0},
+  {0,0,0,0,0},
+  0,
+  {0,0,0,0,0},
+  {0,0,0,0,0}
+}
+
 SkillInfo[S_BODY_DOUBLE]={
   "Body Double", --Skill Name
   {0,0,0,0,0}, -- Range
@@ -214,7 +225,7 @@ SkillInfo[S_BODY_DOUBLE]={
   {0,0,0,0,0}, -- Delay (ms)
   0, -- Target mode (0 = self targeted, 1 = enemy targeted, 2 = ground targeted) 
   {10000,20000,30000,40000,50000}, -- Duration (ms)
-  {17500,17500,23000,30000,40000} -- Reuse Delay (ms)
+  {17500,17500,23000,30000,25000} -- Reuse Delay (ms)
 }
 SkillInfo[S_ILLUSION_OF_BREATH] = {
   "Illusion of Breath",  --Skill Name
@@ -227,6 +238,19 @@ SkillInfo[S_ILLUSION_OF_BREATH] = {
   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- Duration (ms)
   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0} -- Reuse Delay (ms)
 }
+
+SkillInfo[S_ILLUSION_OF_LIGHT] = {
+  "Illusion of Light",  --Skill Name
+  {7, 7, 7, 7, 7, 7, 7, 7, 7, 7}, -- Range
+  {25, 30, 35, 40, 45, 50, 55, 60, 65, 70}, -- SP Cost
+  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- Fixed cast (ms)
+  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- Variable cast (ms)
+  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- Delay (ms)
+  1, -- Target mode (0 = self targeted, 1 = enemy targeted, 2 = ground targeted) 
+  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, -- Duration (ms)
+  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0} -- Reuse Delay (ms)
+}
+
 
 --#####################################
 

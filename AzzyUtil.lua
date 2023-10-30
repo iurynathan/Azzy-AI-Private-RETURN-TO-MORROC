@@ -4,7 +4,7 @@
 -- it is reccomended that you use the seperately available
 -- version, which does not utilize AAI-specific systems. 
 -- Written by Dr. Azzy of iRO Chaos
-AUVersion="1.56"
+AUVersion="1.6"
 -------------------------------
 
 
@@ -1908,18 +1908,6 @@ function GetMinionSkill(myid)
 	return 0,0
 end
 
-function GetProvokeSkill(myid)
-	if (IsHomun(myid)==1) then
-		return 0,0
-	else
-		level=SkillList[MercType][MER_PROVOKE]
-		if level ~=nil then
-			return MER_PROVOKE,level
-		end
-	end
-	return 0,0
-end
-
 function GetSacrificeSkill(myid)
 	level=SkillList[MercType][ML_DEVOTION]
 	if level ~=nil then
@@ -1931,58 +1919,29 @@ end
 function GetMobSkill(myid)
 	local skill = 0
 	local level = 0
+
 	if (IsHomun(myid)==1) then
-	
-		htype=GetV(V_HOMUNTYPE,MyID)
-		if htype <17 then
-			skill=0
-		else -- it's a homun s
-			if htype==EIRA and UseEiraXenoSlasher==1 then
-				skill=MH_XENO_SLASHER
-				if EiraXenoSlasherLevel==nil then
-					level=4
-				else
-					level=EiraXenoSlasherLevel
-				end
-			-- elseif htype==BAYERI and UseBayeriHailegeStar==1 then
-			-- 	skill=MH_HEILIGE_STANGE
-			-- 	if BayeriHailegeStarLevel==nil then
-			-- 		level=5
-			-- 	else
-			-- 		level=BayeriHailegeStarLevel
-			-- 	end
-			elseif htype==SERA and UseSeraPoisonMist==1 and PoisonMistMode==0 then
-				skill=MH_POISON_MIST
-				if SeraPoisonMistLevel==nil then
-					level=5
-				else
-					level=SeraPoisonMistLevel
-				end
-			elseif htype==DIETER and UseDieterLavaSlide==1 and LavaSlideMode==0 then
-				skill=MH_LAVA_SLIDE
-				if DieterLavaSlideLevel==nil then
-					level=10
-				else
-					level=DieterLavaSlideLevel
-				end
-			end 
-			if AutoSkillCooldown[skill]~=nil then
-				if GetTick() < AutoSkillCooldown[skill] then -- in cooldown
-					level=0
-					skill=0
-				end
+		homunculuType = GetV(V_HOMUNTYPE,MyID)
+		
+		if (homunculuType == RAGING) then
+			skill = S_ILLUSION_OF_LIGHT
+
+			if (illusionOfLightLevel == nil) then
+				level = 5
+			else
+				level = illusionOfLightLevel
 			end
 		end
+		if AutoSkillCooldown[skill]~=nil then
+			if GetTick() < AutoSkillCooldown[skill] then -- in cooldown
+				level=0
+				skill=0
+			end
+		end
+
 		return skill,level
-	else -- SO MUCH EASIER WHEN LEVEL ISN'T SELECTABLE!!!!
-		for i,v in ipairs(MobSkillList) do
-			level = SkillList[MercType][v]
-			if level ~= nil then
-				skill=v
-				return skill,level
-			end
-		end
 	end
+
 	return 0,0
 end
 
@@ -2227,7 +2186,7 @@ function GetHealingSkill(myid)
 	local level = 0
 	local skill = 0
 
-	if (IsHomun(myid)==1) then
+	if (IsHomun(myid) == 1) then
 		skill = S_CHAOTIC_HEAL
 
 		if (chaoticHealLevel == 0) then
@@ -2239,9 +2198,8 @@ function GetHealingSkill(myid)
 		else
 			level = chaoticHealLevel
 		end
-	else
-		--currently no merc healing skills
 	end
+
 	return skill, level
 end
 
@@ -2391,10 +2349,10 @@ function DoSkill(skill, level, target, mode, targx, targy)
 			CastSkillLevel = level
 			CastSkillTime = GetTick()
 			CastSkillState = 0
-			logappend("AAI_SKILLFAIL", "Mode set "..mode.." skill "..skill.." level "..level)
+			logappend("AAI_SKILLFAIL", "Mode set "..FormatMode(mode).." "..FormatSkill(skill, level))
 		else --mode is negative, call the plugin mode handler. 
 			DoSkillHandleMode(skill,level,target,mode,targx,targy)
-			logappend("AAI_SKILLFAIL", "Mode set "..mode.." skill "..skill.." level "..level)
+			logappend("AAI_SKILLFAIL", "Mode set "..FormatMode(mode).." "..FormatSkill(skill, level))
 		end
 	end
 	local timeTick = GetTick();
@@ -2412,12 +2370,12 @@ function DoSkill(skill, level, target, mode, targx, targy)
 	AutoSkillTimeout = timeTick + delay
 
 	if (AutoSkillCooldown[skill] ~= nil) then
-		TraceAI("DoSkill: "..skill.." level:"..level.." target:"..target.." mode:"..targetMode.." delay "..delay.." cooldown: "..AutoSkillCooldown[skill]-GetTick())
+		TraceAI("DoSkill: "..FormatSkill(skill, level).." target:"..target.." mode:"..targetMode.." delay "..delay.." cooldown: "..AutoSkillCooldown[skill]-GetTick())
 	else
-		TraceAI("DoSkill: "..skill.." level:"..level.." target:"..target.." mode:"..targetMode.." delay "..delay)
+		TraceAI("DoSkill: "..FormatSkill(skill, level).." target:"..target.." mode:"..targetMode.." delay "..delay)
 	end
-	TraceAI("DoSkill: "..skill.." level:"..level.." target:"..target.." mode:"..targetMode.." delay "..delay)
-	logappend("AAI_SKILLFAIL", "DoSkill: "..skill..", level: "..level..", target: "..target..", mode: "..targetMode..", delay: "..delay.. ", cooldown: "..AutoSkillCooldown[skill]-GetTick())
+	TraceAI("DoSkill: "..FormatSkill(skill, level).." target:"..target.." mode:"..targetMode.." delay "..delay)
+	logappend("AAI_SKILLFAIL", "DoSkill: "..FormatSkill(skill, level)..", target: "..target..", mode: "..targetMode..", delay: "..delay.. ", cooldown: "..AutoSkillCooldown[skill]-GetTick())
 
 	return
 end
@@ -2499,7 +2457,7 @@ end
 
 -- Logging functions:
 
-function 	FormatSkill(skill,level)
+function FormatSkill(skill,level)
 	if skill==nil then
 		return "nil skill"
 	end
@@ -2518,6 +2476,23 @@ function 	FormatSkill(skill,level)
 	else 
 		return output.." level "..level
 	end
+end
+
+function FormatMode(mode)
+	if (mode == nil) then
+		return "nil mode"
+	end
+	local output
+	local name
+
+	if (MODE_NAME[mode] == nil) then
+		name = mode
+	else
+		name = MODE_NAME[mode]
+	end
+	output = name.." ("..mode..")"
+
+	return output
 end
 
 function FormatMotion(motion)

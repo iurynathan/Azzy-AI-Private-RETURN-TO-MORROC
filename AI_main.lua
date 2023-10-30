@@ -4,7 +4,7 @@
 -- This AI is intended for use on official servers only
 -- Permission granted to distribute in unmodified form.
 -- You may expand the AI freely through the M_Extra and H_Extra files
-MainVersion="1.56"
+MainVersion="1.6"
 
 ResCmdList			= List.new()
 -- As of dev 15, global variables are now in Const_.lua
@@ -95,23 +95,8 @@ function doInit(myid)
 		GuardTimeout=GuardTimeout+timelag
 		QuickenTimeout=QuickenTimeout+timelag
 	end
-	AdjustCapriceLevel()
 	UpdateTimeoutFile()
 	DoneInit=1
-end
-function AdjustCapriceLevel()
-	local msp=GetV(V_MAXSP,MyID)
-	if msp < 30 and VanCapriceLevel==nil then 
-		if msp >=28 then
-			VanCapriceLevel=4
-		elseif msp >=26 then
-			VanCapriceLevel=3
-		elseif msp >=24 then
-			VanCapriceLevel=2
-		else
-			VanCapriceLevel=1
-		end
-	end
 end
 function loadtimeouts()
 	if IsHomun(MyID)==1 then
@@ -290,37 +275,21 @@ end
 
 
 function	OnSKILL_OBJECT_CMD (level,skill,id)
-
 	TraceAI ("OnSKILL_OBJECT_CMD"..skill.." "..id.." "..level)
 	ResetCounters()
-	if skill==MH_PAIN_KILLER and IsPlayer(id)==1 and PainkillerFriends~=0 and id~=GetV(V_OWNER,MyID) then
-		MyPState = MyState
-		MyState = PROVOKE_ST
-		MyPEnemy = id
-		MyPSkill = skill
-		MyPSkillLevel = level
-		MyPMode = id
-		if MyFriends[id]~=FRIEND then
-			MyFriends[id]=PKFRIEND
-			if PainkillerFriendsSave==1 then
-				UpdateFriends()
-			end
+	MySkillLevel = level
+	MySkill = skill
+	MyEnemy = id
+
+	if IsMonster(id)==1 and SuperPassive~=1 then
+		BypassKSProtect=1
+		if (UseBerserkSkill==1) then
+			BerserkMode=1
 		end
-		return OnPROVOKE_ST()
+		MyState = CHASE_ST
+		OnCHASE_ST()
 	else
-		MySkillLevel = level
-		MySkill = skill
-		MyEnemy = id
-		if IsMonster(id)==1 and SuperPassive~=1 then
-			BypassKSProtect=1
-			if (UseBerserkSkill==1) then
-				BerserkMode=1
-			end
-			MyState = CHASE_ST
-			OnCHASE_ST()
-		else
-			MyState = SKILL_OBJECT_CMD_ST
-		end
+		MyState = SKILL_OBJECT_CMD_ST
 	end
 end
 
@@ -780,7 +749,7 @@ function	OnCHASE_ST ()
 							mobmode=1
 						end
 						mobskillcount=GetMobCount(v[2],math.min(v[3],mobskill_level),MyEnemy,mobmode)
-						--TraceAI("mobskillcount="..mobskillcount.."tact_skillclass="..tact_skillclass.."class_mob="..CLASS_MOB.."AutoMobCount="..AutoMobCount.." "..FormatSkill(v[2],math.min(v[3],mobskill_level)))
+						TraceAI("mobskillcount="..mobskillcount.."tact_skillclass="..tact_skillclass.."class_mob="..CLASS_MOB.."AutoMobCount="..AutoMobCount)
 						if (mobskillcount >= AutoMobCount or tact_skillclass == CLASS_MOB) then
 							if (availsp >= GetSkillInfo(v[2],3,math.min(v[3],mobskill_level)))then
 								if (skilltouse[1] < 2) then
@@ -1108,7 +1077,7 @@ function OnATTACK_ST ()
 								mobmode=1
 							end
 							mobskillcount=GetMobCount(v[2],math.min(v[3],mobskill_level),MyEnemy,mobmode)
-							--TraceAI("mobskillcount="..mobskillcount.."tact_skillclass="..tact_skillclass.."class_mob="..CLASS_MOB.."AutoMobCount="..AutoMobCount.." "..FormatSkill(v[2],math.min(v[3],mobskill_level)))
+							TraceAI2("Attack -> mobskillcount="..mobskillcount.."tact_skillclass="..tact_skillclass.."class_mob="..CLASS_MOB.."AutoMobCount="..AutoMobCount.." "..FormatSkill(v[2],math.min(v[3],mobskill_level)))
 							if (mobskillcount >= AutoMobCount or tact_skillclass == CLASS_MOB) then
 								if (availsp >= GetSkillInfo(v[2],3,math.min(v[3],mobskill_level)))then
 									if (skilltouse[1] < 2) then
@@ -2111,6 +2080,7 @@ function SelectEnemy(enemys,curenemy)
 	TraceAI("SelectEnemy returning target "..result)
 	return result
 end
+
 function convpriority(base,agr)
 	local priority
 	if base > 9 and base < 13 then --Snipe modes are to be treated as attack
@@ -2191,7 +2161,7 @@ function DoAutoBuffs(buffmode)
 	end
 	TraceAI("DoAutoBuffs"..buffmode)
 
-	if (UseOffensiveBuff == buffmode and QuickenTimeout ~= -1) then
+	if (UseOffensiveBuff == buffmode and QuickenTimeout ~= -1 and MyState ~= ATTACK_ST) then
 		if (GetTick() > QuickenTimeout) then
 			local skill, level = GetQuickenSkill(MyID)
 
@@ -2231,22 +2201,36 @@ function DoAutoBuffs(buffmode)
 end
 
 function DoHealingTasks (myid) 
-	rhp=HPPercent(myid)
-	ohp=HPPercent(GetV(V_OWNER,myid))
-	skill,level=GetHealingSkill(myid)
-	if skill<=0 then 
-		UseAutoHeal=0
+	local rhp = HPPercent(myid)
+	local ohp = HPPercent(GetV(V_OWNER,myid))
+	local skill, level = GetHealingSkill(myid)
+
+	if (skill <= 0) then
+		UseAutoHeal = 0
 		return
-	elseif level==0 or GetTick() < AutoSkillTimeout then
+	elseif (level == 0 or GetTick() < AutoSkillTimeout) then
 		return --skill in cooldown
 	end
 	local homunculuSp = GetV(V_SP, myid)
-	local chaoticHealCostSp = math.floor(homunculuSp / GetSkillInfo(skill, 3, level))
-	if rhp < HealSelfHP then
-		if skill==S_CHAOTIC_HEAL then
-			if GetV(V_SP,myid) > chaoticHealCostSp then
-				TraceAI("Using self Healing skill "..FormatSkill(skill,level))
-				if ohp < HealOwnerHP and MyState==IDLE_ST then
+	local homunculuMaxSp = GetV(V_MAXSP, myid)
+	local chaoticHealCostSp = math.floor(homunculuMaxSp * 0.15 + GetSkillInfo(skill, 3, level))
+
+	if (healConditions[MyState] == 1 and healConditions['MAXHP'] > rhp) then
+		if (skill == S_CHAOTIC_HEAL) then
+			if (homunculuSp > chaoticHealCostSp) then
+				DoSkill(skill,5,myid)
+
+				return 1
+			else
+				TraceAI("Can't use self healing skill, no SP")
+			end
+		end
+	end
+
+	if (rhp < HealSelfHP) then
+		if (skill == S_CHAOTIC_HEAL) then
+			if (homunculuSp > chaoticHealCostSp) then
+				if (ohp < HealOwnerHP and MyState == IDLE_ST) then
 					DoSkill(skill,5,myid) 
 				else
 					DoSkill(skill,4,myid)
@@ -2257,8 +2241,9 @@ function DoHealingTasks (myid)
 			end
 		end
 	end
-	if ohp < HealOwnerHP then
-		if GetV(V_SP,myid) > chaoticHealCostSp then
+
+	if (ohp < HealOwnerHP) then
+		if (homunculuSp > chaoticHealCostSp) then
 			TraceAI("Using Healing skill "..FormatSkill(skill,level))
 			DoSkill(skill,level,GetV(V_OWNER,myid))
 			return 1
@@ -2295,85 +2280,6 @@ function TimeoutConv(a)
 		return 0
 	else
 		return a
-	end
-end
-
-function OnPROVOKE_ST()
-	--local skill,level = GetProvokeSkill(MyID)
-	if MyPSkillLevel==nil then
-		logappend("AAI_ERROR","PSkillLevel is nil at start of OnPROVOKE_ST")
-	end
-	if MyPosX[1]==MyPosX[2] and MyPosY[1]==MyPosY[2] then
-		SkillObjectCMDTimeout=SkillObjectCMDTimeout+1
-	end
-	local tx,ty=GetV(V_POSITION,MyPEnemy)
-	if IsInAttackSight(MyID,MyPEnemy,MyPSkill,MyPSkillLevel) then
-		
-		if MyPMode == 7 then
-			ProvokeOwnerTimeout = GetTick()+GetSkillInfo(MyPSkill,8,MyPSkillLevel)
-		elseif MyPMode== 9 then
-			SightTimeout = GetTick()+GetSkillInfo(MyPSkill,8,MyPSkillLevel)
-		elseif IsPlayer(MyPMode) then -- to detect painkiller-friends, in which case PMode is the id of the friend
-			PKFriendsTimeout[MyPMode]=GetTick()+GetSkillInfo(MyPSkill,8,MyPSkillLevel)	
-		end
-		UpdateTimeoutFile()
-		DoSkill(MyPSkill,MyPSkillLevel,MyPEnemy,MyPMode)
-		MyState=MyPState
-		TraceAI("PROVOKE_ST -> IDLE_ST - Buff/AoE okay"..MyState)
-		MyDestX,MyDestY,MyPEnemy,MyPSkill,MyPState,MyPSkillLevel,MyPMode=0,0,0,0,0,0,0
-		return
-	elseif SkillObjectCMDTimeout>SkillObjectCMDLimit then
-		TraceAI("PROVOKE_ST -> IDLE_ST Couldn't get into range to provoke/AoE owner")
-		if (MyPMode==7) then
-			ProvokeOwnerTimeout=GetTick()+10000
-		end
-		if MyPState~=PROVOKE_ST then
-			MyState=MyPState
-		else
-			MyState=0
-		end
-		SkillObjectCMDTimeout=0
-		MyDestX,MyDestY,MyPEnemy,MyPSkill,MyPState,MyPSkillLevel,MyPMode=0,0,0,0,0,0,0
-		return
-	elseif SkillObjectCMDTimeout>(SkillObjectCMDLimit/2) then --We're having trouble getting to the place we want to in order to use this buff, so let's just try to move right to target
-		range = AttackRange(MyID,MyPSkill,MyPSkillLevel)
-		if range > 2 and MyPEnemy==GetV(V_OWNER,MyID) then
-			TraceAI("PROVOKE_ST -> PROVOKE_ST - Moving to owner from "..formatpos(MyPosX[1],MyPosY[1]).." targeting "..MyPEnemy.." at "..formatpos(tx,ty))
-			MoveToOwner(MyID)
-		else
-			--local x,y=ClosestR(MyID,MyPEnemy,AttackRange(MyID,MyPSkill,MyPSkillLevel),math.random(2))
-			local x,y=GetStandPoint(MyID,MyPEnemy,MyPSkill,MyPSkillLevel,1)
-			if x==-1 then
-				TraceAI("PROVOKE_ST -> IDLE_ST target surrounded, no available cells!")
-				if MyPState~=PROVOKE_ST then
-					MyState=MyPState
-				else
-					MyState=0
-				end
-				SkillObjectCMDTimeout=0
-				MyDestX,MyDestY,MyPEnemy,MyPSkill,MyPState,MyPSkillLevel,MyPMode=0,0,0,0,0,0,0
-			else
-				TraceAI("PROVOKE_ST -> PROVOKE_ST - Moving (alt=1) to "..formatpos(x,y).." from "..formatpos(MyPosX[1],MyPosY[1]).." targeting "..MyPEnemy.." at "..formatpos(tx,ty))
-				Move(MyID,x,y)
-			end
-		end
-		return
-	else
-		local x,y=GetStandPoint(MyID,MyPEnemy,MyPSkill,MyPSkillLevel,0)
-		if x==-1 then
-			TraceAI("PROVOKE_ST -> IDLE_ST target surrounded, no available cells!")
-			if MyPState~=PROVOKE_ST then
-				MyState=MyPState
-			else
-				MyState=0
-			end
-			SkillObjectCMDTimeout=0
-			MyDestX,MyDestY,MyPEnemy,MyPSkill,MyPState,MyPSkillLevel,MyPMode=0,0,0,0,0,0,0
-		else
-			TraceAI("PROVOKE_ST -> PROVOKE_ST - Moving to "..formatpos(x,y).." from "..formatpos(MyPosX[1],MyPosY[1]).." targeting "..MyPEnemy.." at "..formatpos(tx,ty))
-			Move(MyID,x,y)
-		end
-		return
 	end
 end
 
@@ -2756,25 +2662,18 @@ function FailSkillUse(mode)
 			GuardTimeout=1
 		elseif mode==2 then
 			QuickenTimeout=1
-		elseif mode==7 then
-			SightTimeout=1
-		elseif mode==9 then
-			ProvokeOwnerTimeout=1
-		elseif mode==10 then
-			SteinWandTimeout = 1
 		elseif IsPlayer(modex) then
-			--logappend("AAI_PKF","skill failed on"..mode)
 			PKFriendsTimeout[modex]=1
 		else
 			OnFailUnknownMode(mode)
 		end
-		TraceAI("Skill cast appears to have failed: Mode "..mode.." fail count "..SkillFailCount[mode].." will try again")
-		logappend("AAI_SKILLFAIL","Skill cast appears to have failed: Mode "..mode.." fail count "..SkillFailCount[mode].." will try again")
+		TraceAI("Skill cast appears to have failed: Mode "..FormatMode(mode).." fail count "..SkillFailCount[mode].." will try again")
+		logappend("AAI_SKILLFAIL","Skill cast appears to have failed: Mode "..FormatMode(mode).." fail count "..SkillFailCount[mode].." will try again, QuickenTimeout: "..QuickenTimeout..", GuardTimeout: "..GuardTimeout)
 		SkillFailCount[mode]=SkillFailCount[mode]+1
 	else
 		if (mode~=nil and mode ~=0) then
-		TraceAI("Skill cast appears to have failed, but we're past the retry limit, so screw it: Mode "..mode.." fail count "..SkillFailCount[mode])
-		logappend("AAI_SKILLFAIL","Skill cast appears to have failed, but we're past the retry limit, so screw it: Mode "..mode.." fail count "..SkillFailCount[mode])
+		TraceAI("Skill cast appears to have failed, but we're past the retry limit, so screw it: Mode "..FormatMode(mode).." fail count "..SkillFailCount[mode])
+		logappend("AAI_SKILLFAIL","Skill cast appears to have failed, but we're past the retry limit, so screw it: Mode "..FormatMode(mode).." fail count "..SkillFailCount[mode]..", QuickenTimeout: "..QuickenTimeout..", GuardTimeout: "..GuardTimeout)
 		SkillFailCount[mode]=0
 	end
 	end
@@ -2804,7 +2703,7 @@ function AI(myid)
 	else
 		if (LastAITime + 400 < GetTick() and LastAITime > 10) then
 			TraceAI("Missed AI calls. Previous AI call was "..LastAITime-GetTick().." ms ago")
-			logappend("AAI_SKILLFAIL", "Missed AI calls. Previous AI call was "..LastAITime-GetTick().." ms ago")
+			logappend("AAI_SKILLFAIL", "Missed AI calls. Previous AI call was "..LastAITime-GetTick().." ms ago, Cast Skill: "..FormatSkill(CastSkill, CastSkillLevel))
 
 			EnemyPosX = {0,0,0,0,0,0,0,0,0,0} --When we miss AI calls, that means our predictive motion is probly screwed up
 			EnemyPosY = {0,0,0,0,0,0,0,0,0,0} --so flush this to prevent homun from getting confused by it, 
@@ -2871,26 +2770,17 @@ function AI(myid)
 		logappend("AAI_ERROR","Guard timeout was "..GuardTimeout.." time is "..GetTick())
 		GuardTimeout=1
 	end
+
 	if QuickenTimeout-GetTick() > 1205000 then
 		logappend("AAI_ERROR","Quicken timeout was "..QuickenTimeout.." time is "..GetTick())
 		QuickenTimeout=1
 	end
-	if MyMaxSP~=GetV(V_MAXSP,MyID) then
-		AdjustCapriceLevel()
-		MyMaxSP=GetV(V_MAXSP,MyID)
-	end
+
 	if AIInitTick==0 or AIInitTick==1 or AIInitTick==nil then
 		AIInitTick=GetTick()
 	end
-	FastChangeCount = 0
-	--###For UseSmartBulwark:
-	if UseSmartBulwark==1 then
-		MyBuffSPCost=0
-		for k,v in pairs(MyBuffSPCosts) do
-			MyBuffSPCost=MyBuffSPCost+v
-		end
-	end
 
+	FastChangeCount = 0
 
 	--###DATA GATHERING###
 	for k,v in pairs(Unreachable) do
@@ -2913,11 +2803,8 @@ function AI(myid)
 		MyASAPBuffs[v],MyPosX[v],MyPosY[v],OwnerPosX[v],OwnerPosY[v],EnemyPosX[v],EnemyPosY[v],MyMotions[v],MyStates[v],MyEnemies[v]=MyASAPBuffs[v-1],MyPosX[v-1],MyPosY[v-1],OwnerPosX[v-1],OwnerPosY[v-1],EnemyPosX[v-1],EnemyPosY[v-1],MyMotions[v-1],MyStates[v-1],MyEnemies[v-1]
 	end	
 	MyPosX[1],MyPosY[1],OwnerPosX[1],OwnerPosY[1],EnemyPosX[1],EnemyPosY[1],MyMotions[1],MyStates[1],MyEnemies[1]=x,y,ox,oy,ex,ey,GetV(V_MOTION,MyID),MyState,MyEnemy
-	if MyState==PROVOKE_ST then
-		MyASAPBuffs[1]=MyASAPBuffs[2]
-	else
-		MyASAPBuffs[1]=0
-	end
+	MyASAPBuffs[1]=0
+
 	--for v=1,10 do
 	--	myposlog=myposlog.." "..MyPosX[v]..","..MyPosY[v]
 	--end
@@ -3113,8 +3000,8 @@ function AI(myid)
 		local fixedCastSkillOld = GetSkillInfo(CastSkill, 4, CastSkillLevel)
 		local variableCastSkillOld = GetSkillInfo(CastSkill, 5, CastSkillLevel)
 		local skillCastingTime = fixedCastSkillOld + variableCastSkillOld * CastTimeRatio
-		
-		logappend("AAI_SKILLFAIL", "Skillfail Watcher active: " ..FormatSkill(CastSkill, CastSkillLevel).. ", mode: " ..CastSkillMode.. ", delay: " ..LastAIDelay.. ", motion: "..GetV(V_MOTION, MyID))
+
+		logappend("AAI_SKILLFAIL", "Skillfail Watcher active: " ..FormatSkill(CastSkill, CastSkillLevel).. ", mode: " ..CastSkillMode.. ", delay: " ..LastAIDelay.. ", motion: "..GetV(V_MOTION, MyID)..", QuickenTimeout: "..QuickenTimeout - GetTick().." ms, GuardTimeout: " ..GuardTimeout - GetTick().." ms")
 		if (fixedCastSkillOld + variableCastSkillOld == 0) then 
 			if LastAIDelay > 500 then
 				--Skill cast successfully
@@ -3131,24 +3018,24 @@ function AI(myid)
 				clearcastskill=2
 			end
 		else
-			if GetV(V_MOTION,MyID)==MOTION_CASTING then
-				CastSkillState=1
-			elseif CastSkillState>0 then
+			if (GetV(V_MOTION, MyID) == MOTION_CASTING) then
+				CastSkillState = 1
+			elseif (CastSkillState > 0) then
 				if LastAIDelay > 220 then
 					--Skill cast successfully
-					if CastSkillMode==8 then
+					if (CastSkillMode == 8) then
 						UpdateTimeoutFile()
 					end
 					TraceAI("Delay watcher: Skill use successful detected by delay - mode "..CastSkillMode.." skill "..FormatSkill(CastSkill,CastSkillLevel).." LastAIDelay "..LastAIDelay)
 					logappend("AAI_SKILLFAIL","successful skill use detected by delay - mode "..CastSkillMode.." skill "..FormatSkill(CastSkill,CastSkillLevel).." LastAIDelay "..LastAIDelay)
 					clearcastskill=1
 				else
-					CastSkillState=CastSkillState+1
-					if CastSkillState > 2 then
-						local flinch=0
+					CastSkillState = CastSkillState + 1
+					if (CastSkillState > 2) then
+						local flinch = 0
 						for v=1,10,1 do
-							if MyMotions[v]==MOTION_DAMAGE then
-								flinch=1
+							if (MyMotions[v] == MOTION_DAMAGE) then
+								flinch = 1
 								break
 							end
 						end
@@ -3190,7 +3077,7 @@ function AI(myid)
 				clearcastskill=1
 			--end
 			if (sp - MyLastSP == RegenTick[1] - skillOldSpCost) then
-				LastSPTime=GetTick()
+				LastSPTime = GetTick()
 			end
 		elseif (MyLastSP <= sp) then
 			if (sp - MyLastSP == RegenTick[1] and RegenTick[1] ~= 0) then
@@ -3204,7 +3091,7 @@ function AI(myid)
 			-- do nothing, owner aid-potted it, ignore this
 		elseif sp-MyLastSP > RegenTick[1] or (sp-MyLastSP < RegenTick[1] and sp-MyLastSP > 0)  then
 			LastSPTime=GetTick()
-			if sp-MyLastSP > math.floor(GetV(V_MAXSP,MyID)/100)+3 then -- this could be the correct tick to use
+			if (sp - MyLastSP > math.floor(GetV(V_MAXSP, MyID)/100)+3) then -- this could be the correct tick to use
 				for v=3,2,-1 do
 					RegenTick[2][v]=RegenTick[2][v-1]
 				end
@@ -3251,7 +3138,6 @@ function AI(myid)
 		ProcessCommand (msg)	-- ¸í·É¾î Ã³¸® 
 	end
 	
-	
 	OnAImiddle()
 	
 	--###EMERGENCY HANDLING###
@@ -3264,7 +3150,8 @@ function AI(myid)
 			end
 		end
 	end
-	if UseAutoHeal==1 then
+
+	if (UseAutoHeal == 1) then
 		if DoHealingTasks(MyID) == 1 then
 			return
 		end
@@ -3346,7 +3233,6 @@ function AI(myid)
 		end
 	end
 
-
 	if DoAutoBuffs(3) ~= 1 then
 		logappend("AAI_ASAP","ASAP BUFF "..MyState)
 		return
@@ -3360,9 +3246,9 @@ function AI(myid)
 		end
 	end
 	
- 	if LagReductionCD > 0 then
- 		TraceAI("Skipping state functions due to aggressive lag reduction")
- 	elseif (MyState == IDLE_ST) then
+  if LagReductionCD > 0 then
+		TraceAI("Skipping state functions due to aggressive lag reduction")
+	elseif (MyState == IDLE_ST) then
 		OnIDLE_ST ()
 	elseif (MyState == CHASE_ST) then					
 		OnCHASE_ST ()
@@ -3398,8 +3284,6 @@ function AI(myid)
 		OnTANKCHASE_ST()
 	elseif (MyState == TANK_ST) then
 		OnTANK_ST()
-	elseif (MyState == PROVOKE_ST) then
-		OnPROVOKE_ST()
 	elseif (MyState == MOVE_CMD_HOLD_ST) then
 		OnMOVE_CMD_HOLD_ST()
 	elseif (MyState == FRIEND_CROSS_ST) then

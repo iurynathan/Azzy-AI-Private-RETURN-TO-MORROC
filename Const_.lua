@@ -1,5 +1,5 @@
 -- AzzyAI Constant File
-CVersion="1.6"
+CVersion="1.61"
 
 --[[
 function	TraceAI (string) end
@@ -254,7 +254,6 @@ CAST_REACT_DEBUFF	= 13
 CAST_REACT_MINION	= 15
 CAST_REACT_ANY		= 9
 CAST_REACT_CRASH 	= 8225
-CAST_REACT_PROVOKE 	= 8232
 CAST_REACT_SANDMAN 	= 8211
 CAST_REACT_FREEZE 	= 8212
 CAST_REACT_DECAGI 	= 8234
@@ -279,7 +278,6 @@ DEBUFF_NEVER 	=0 -- To use Debuff skill, use the skill as the debuff field of th
 DEBUFF_NEVER = 0
 DEBUFF_ANY_C = -1
 DEBUFF_CRASH_C = -8225
-DEBUFF_PROVOKE_C = -8232
 DEBUFF_SANDMAN_C = -8211
 DEBUFF_FREEZE_C = -8212
 DEBUFF_DECAGI_C = -8234
@@ -288,7 +286,6 @@ DEBUFF_BREEZE_C=-8026
 DEBUFF_ASH_C=-8043
 DEBUFF_ANY_A = 1
 DEBUFF_CRASH_A = 8225
-DEBUFF_PROVOKE_A = 8232
 DEBUFF_SANDMAN_A = 8211
 DEBUFF_FREEZE_A = 8212
 DEBUFF_DECAGI_A = 8234
@@ -381,7 +378,6 @@ ORBITWALK_ST				= 101
 REST_ST					= 102
 TANKCHASE_ST				= 103
 TANK_ST					= 104
-PROVOKE_ST				= 105
 FRIEND_CROSS_ST				= 106
 FRIEND_CIRCLE_ST			= 107	
 MOVE_CMD_HOLD_ST			= 108
@@ -405,12 +401,18 @@ STATE_NAME = {
   [REST_ST] = ' - REST_ST',
   [TANKCHASE_ST] = ' - TANKCHASE_ST',
   [TANK_ST] = ' - TANK_ST',
-  [PROVOKE_ST] = ' - PROVOKE_ST',
   [FRIEND_CROSS_ST] = ' - FRIEND_CROSS_ST',
   [FRIEND_CIRCLE_ST] = ' - FRIEND_CIRCLE_ST',	
   [MOVE_CMD_HOLD_ST] = ' - MOVE_CMD_HOLD_ST',
 }
-----------------------------
+------------------------------------------
+-- mode variable
+------------------------------------------
+
+MODE_NAME = {
+  [1] = "Defende Mode",
+  [2] = "Quick Mode",
+}
 
 ------------------------------------------
 -- global variable
@@ -453,12 +455,8 @@ AIInitTick=0
 --Autoskill timeout counters
 QuickenTimeout			= 0
 GuardTimeout			= 0
-SightTimeout			= 0
 SkillTimeout			= 0
-ProvokeOwnerTimeout		= 0
-ProvokeSelfTimeout		= 0
 SacrificeTimeout		= 0
-SteinWandTimeout		= 0
 AutoSkillTimeout		= 0 --Cast time + delay timeout
 AttackTimeout			= 0 --for AttackTimeLimit
 AutoSkillCastTimeout	= 0 --Cast time timeout
