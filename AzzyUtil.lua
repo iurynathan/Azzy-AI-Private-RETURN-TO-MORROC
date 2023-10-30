@@ -365,6 +365,7 @@ function GetAggroCount(target)
 			end
 		end
 	end
+
 	return aggrocount
 end
 
@@ -1798,7 +1799,7 @@ function GetAtkSkill(myid)
 			else
 				level = illusionOfBreathLevel
 			end
-		elseif	(homunculuType == AGILE or homunculuType == RAGING) then
+		else
 			skill = S_ILLUSION_OF_CLAWS
 
 			if (illusionOfClawsLevel == 0) then
@@ -1923,13 +1924,13 @@ function GetMobSkill(myid)
 	if (IsHomun(myid)==1) then
 		homunculuType = GetV(V_HOMUNTYPE,MyID)
 		
-		if (homunculuType == OCCULT) then
-			skill = S_ILLUSION_OF_LIGHT
+		if (homunculuType == RAGING) then
+			skill = S_CHAOTIC_HEAL
 
-			if (illusionOfLightLevel == nil) then
+			if (chaoticHealLevel == nil) then
 				level = 5
 			else
-				level = illusionOfLightLevel
+				level = chaoticHealLevel
 			end
 		end
 		if AutoSkillCooldown[skill]~=nil then
