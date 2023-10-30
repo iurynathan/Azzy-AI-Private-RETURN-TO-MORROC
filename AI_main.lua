@@ -80,9 +80,6 @@ function doInit(myid)
 		OutFile:close()
 	end
 	local mskill,mlevel=GetMobSkill(MyID)
-	if mskill==0 and (GetV(V_HOMUNTYPE,MyID)==SERA and PoisonMistMode~=0) or (GetV(V_HOMUNTYPE,MyID)==DIETER and LavaSlideMode~=0) then
-		mskill,mlevel=GetSightOrAoE(MyID)
-	end
 	if mskill~=0 and mlevel~=0 and AoEReserveSP==1 and AutoMobMode~=0 then
 		ReserveSP=GetSkillInfo(mskill,3,mlevel)
 	end
@@ -1144,34 +1141,6 @@ function OnATTACK_ST ()
 	if (MySkill ~=0) then
 		TraceAI("Skill Attack: "..MySkill.." target: "..MyEnemy.." level:"..MySkillLevel)
 		SkillTarget=MyEnemy
-		if (MySkill==MA_SHARPSHOOTING and AoEMaximizeTargets==1) then
-			target,hitcount=GetBestFASTarget(MyID)
-			TraceAI(target.." - "..hitcount)
-			if hitcount > 0 and target~=-1 then
-				SkillTarget=target
-			elseif hitcount== 0 then
-				MySkill=0
-			end
-			TraceAI("Skill Attack: "..MySkill.." (FAS) target: "..SkillTarget.." enemy: "..MyEnemy)			
-		elseif (MySkill==ML_BRANDISH and AoEMaximizeTargets==1) then
-			target=GetBestBrandishTarget(MyID)
-			if target~=-1 then
-				SkillTarget=target
-			end
-			TraceAI("Skill Attack: "..MySkill.." (brandish) target: "..SkillTarget.." enemy: "..MyEnemy)
-		elseif (MySkill==MH_HAILAGE_STAR or MySkill==MS_BOWLING_BASH) and AoEMaximizeTargets==1 then 
-			target=GetBestAoETarget(MyID,MySkill,MySkillLevel)
-			if target~=-1 then
-				SkillTarget=target
-			end
-			TraceAI("Skill Attack: "..MySkill.." (brandish) target: "..SkillTarget.." enemy: "..MyEnemy)
-		elseif ((MySkill==MH_XENO_SLASHER or MySkill==MH_LAVA_SLIDE or MySkill==MA_SHOWER or MySkill==MH_POISON_MIST) and AoEMaximizeTargets==1) or  (MySkill==MH_VOLCANIC_ASH and AshMaximizeTargets==1) then
-			targx,targy=GetBestAoECoord(MyID,MySkill,MySkillLevel)
-			if targx~=-1 then
-				SkillTargetX,SkillTargetY=targx,targy
-			end
-			TraceAI("Skill Attack: "..MySkill.." (brandish) target: "..SkillTarget.." enemy: "..MyEnemy)
-		end
 		if MySkill ~=0 then
 			if GetV(V_HOMUNTYPE,MyID) == ELEANOR then
 				MySpheres = math.max(math.min(10,MySpheres+1/SphereTrackFactor),0)
@@ -2134,18 +2103,6 @@ function DoIdleTasks()
 	end
 	if DoAutoBuffs(1) ~=1 then
 		return
-	end
-	if (UseSacrificeOwner == 1 and SacrificeTimeout ~=-1) then
-		if (GetTick() > SacrificeTimeout) then
-			local skill,level= GetSacrificeSkill(MyID)
-			if (skill <= 0) then
-				SacrificeTimeout = -1
-			elseif (GetSkillInfo(skill,3,level) <= GetV(V_SP,MyID)) then
-				DoSkill(skill,level,GetV(V_OWNER,MyID),7)
-				SacrificeTimeout = GetTick() + GetSkillInfo(skill,8,level) -- this will recast it before it drops, because the countdown starts at the start of the cast time, but duration counts down from end of cast time.
-				return
-			end
-		end
 	end
 	if (GetV(V_MOTION,GetV(V_OWNER,MyID))==MOTION_SIT and MyState~=REST_ST and DoNotUseRest~=1) then
 		MyState=REST_ST

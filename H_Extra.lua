@@ -37,13 +37,6 @@ FriendAttack[MOTION_TOSS]=0	--Uses SpearBoom/AidPot/other "throwing" things
 FriendAttack[MOTION_BIGTOSS]=1	--Uses Acid Bomb
 FriendAttack[MOTION_FULLBLAST]=1	--Uses Full Blast
 
-BasicDebuffs={}
-BasicDebuffs[MER_CRASH]=	1
-BasicDebuffs[MER_LEXDIVINA]=	1
-BasicDebuffs[MER_DECAGI]=	1
-BasicDebuffs[MA_SANDMAN]=	1
-BasicDebuffs[MA_FREEZINGTRAP]=	1
-
 --[[
 Tactics switching:
 You may desire to switch your tactics based on conditions. The can be accomplished by making a second tactics file, and including a require "./AI/USER_AI/(your tactics file name)", and uncommenting the lines below

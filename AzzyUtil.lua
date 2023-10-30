@@ -44,14 +44,6 @@ Useful for deciding whether to use anti-mob skills.
 ex:
 local mobcount,aggrocount = GetMobCount(MyID,1,GetV(V_OWNER,MyID))
 
-GetBestBrandishTarget(id)
-Returns the id of the best monster adjacent to the mercenary to use brandish spear on (that is, the target that will result in the most monsters being hit). 
-Assumes level 1 brandish area. 
-
-ex:
-SkillObject(MyID,MySkillLevel,ML_BRANDISH,GetBestBrandishTarget(MyID))
-
-
 @@@@@@@@@@@@@@@@@@@@@@@
 @@@ Skill Functions @@@
 @@@@@@@@@@@@@@@@@@@@@@@
@@ -75,10 +67,7 @@ ex
 local skill,level = GetQuickenSkill(MyID)
 
 GetGuardSkill(id)
-As GetQuickenSkill() only returns the ID of the guard or parry skill posessed by the mercenary. 
-
-GetSacrificeSkill(id)
-As GetQuickenSkill() only returns the ID and other perameters for the Sacrifice (aka Devotion) skill posessed by the mercenary.
+As GetQuickenSkill() only returns the ID of the guard or parry skill posessed by the mercenary.
 
 GetProvokeSkill(id)
 As GetQuiceknSkill() only returns the ID and other perameters for the Provoke skill posessed by the mercenary. 
@@ -376,63 +365,21 @@ function GetMobCount(skill,level,target,aggro)
 	end
 	local skillaoe=SkillAOEInfo[skill][1][level]
 	local x,y=GetV(V_POSITION,MyID)
-	if skillaoe==nil then
-		if skill == ML_BRANDISH then
-			for k,v in pairs (Targets) do
-				if GetV(V_MOTION,k)~=MOTION_DEAD then
-					if (GetDistanceA(myid,k)<=1 and GetDistanceA(target,k) <=1 and (v[2]>0 or aggro~=0)) then
-						mobcount=mobcount+1*GetTact(TACT_WEIGHT,k)
-					elseif (GetDistanceA(myid,k) ==2 and GetDistance3(myid,k) < 2.5 and GetDistance3(target,k) < 2.5 and (v[2]>0 or aggro~=0)) then -- sides, 2 cells to either side of target/merc
-						mobcount=mobcount+1*GetTact(TACT_WEIGHT,k)
-					end
-				end
-			end
-		elseif skill== MA_SHARPSHOOTING then
-			mx,my=GetV(V_POSITION,target)
-			dx=math.abs(x-mx)
-			dy=math.abs(y-my)
-			if ((dx==0) or (dx==1 and dy>1) or (dx==2 and dy>6) or (dx==3 and dy>9) or (dx==4 and dy>11)) then 
-				if my>y then
-					mobcount=GetFASTargetCount(MyID,0,1,aggro)
-				elseif my<y then
-					mobcount=GetFASTargetCount(MyID,0,-1,aggro)
-				end
-			elseif ((dy==0) or (dy==1 and dx>1) or (dy==2 and dx>6) or (dy==3 and dx>9) or (dy==4 and dx>11)) then
-				if mx>x then
-					mobcount=GetFASTargetCount(MyID,1,0,aggro)
-				elseif mx<x then
-					mobcount=GetFASTargetCount(MyID,-1,0,aggro)
-				end
-			-- diagonals
-			elseif mx>x then
-				if my>y then
-					mobcount=GetFASTargetCount(MyID,1,1,aggro)
-				else
-					mobcount=GetFASTargetCount(MyID,-1,1,aggro)
-				end
-			elseif my>y then
-				mobcount=GetFASTargetCount(MyID,1,-1,aggro)
-			else
-				mobcount=GetFASTargetCount(MyID,-1,-1,aggro)
-			end
-		end
-	else -- we have a wellbehaved skill
-		if GetSkillInfo(skill,7)==0 then
-			target=MyID
-		end
-		range=(skillaoe-1)/2
-		local logstring=""
-		for k,v in pairs(Targets) do
-			local tbas=GetTact(TACT_BASIC,k)
-			local dist = GetDistanceAR(target,k)
-			logstring=logstring.."|"..k.."v[2]"..v[2].."t"..GetV(V_TARGET,k).."m"..GetV(V_MOTION,k).."aggro"..aggro
-			if dist <= range and (v[2]>0 or aggro~=0) and tbas~=0 then
-				mobcount=mobcount+1*GetTact(TACT_WEIGHT,k)
-				logstring=logstring.."add:"..GetTact(TACT_WEIGHT,k).."new:"..mobcount
-			end			
-		end
-		logappend("AAI_MOBCOUNT","Mobcount on well-behaved skill "..FormatSkill(skill,level).." range "..range.." logstring: "..logstring.." result: "..mobcount)
+	if GetSkillInfo(skill,7)==0 then
+		target=MyID
 	end
+	range=(skillaoe-1)/2
+	local logstring=""
+	for k,v in pairs(Targets) do
+		local tbas=GetTact(TACT_BASIC,k)
+		local dist = GetDistanceAR(target,k)
+		logstring=logstring.."|"..k.."v[2]"..v[2].."t"..GetV(V_TARGET,k).."m"..GetV(V_MOTION,k).."aggro"..aggro
+		if dist <= range and (v[2]>0 or aggro~=0) and tbas~=0 then
+			mobcount=mobcount+1*GetTact(TACT_WEIGHT,k)
+			logstring=logstring.."add:"..GetTact(TACT_WEIGHT,k).."new:"..mobcount
+		end			
+	end
+	logappend("AAI_MOBCOUNT","Mobcount on well-behaved skill "..FormatSkill(skill,level).." range "..range.." logstring: "..logstring.." result: "..mobcount)
 	return mobcount
 end
 
@@ -1315,8 +1262,6 @@ function AttackRange(myid,skill,level)
 		else
 			a     = GetV(V_ATTACKRANGE,myid)
 		end
-	--elseif (skill==MS_BOWLINGBASH) then
-	--	a	= 1
 	else
 		a = GetSkillInfo(skill,2,level)
 		if a==nil then
@@ -1934,14 +1879,6 @@ function GetMinionSkill(myid)
 	return 0,0
 end
 
-function GetSacrificeSkill(myid)
-	level=SkillList[MercType][ML_DEVOTION]
-	if level ~=nil then
-		return ML_DEVOTION,level
-	end
-	return 0,0
-end
-
 function GetMobSkill(myid)
 	local skill = 0
 	local level = 0
@@ -1974,24 +1911,14 @@ end
 
 function GetQuickenSkill(myid)
 	local level = 0
-	local skill = 0
+	local skill = S_BODY_DOUBLE
 
-	if (IsHomun(myid) == 1) then
-		skill = S_BODY_DOUBLE
-
-		if (bodyDoubleLevel == 0) then
-			level = 0
-		elseif (bodyDoubleLevel == nil and bodyDoubleLevel > 0) then
-			level = 5
-		else
-			level = bodyDoubleLevel
-		end
+	if (bodyDoubleLevel == 0) then
+		level = 0
+	elseif (bodyDoubleLevel == nil and bodyDoubleLevel > 0) then
+		level = 5
 	else
-		level = SkillList[MercType][MER_QUICKEN]
-
-		if (level ~= nil) then
-			skill = MER_QUICKEN
-		end
+		level = bodyDoubleLevel
 	end
 	if (AutoSkillCooldown[skill] ~= nil) then
 		if (GetTick() < AutoSkillCooldown[skill]) then -- in cooldown
@@ -2001,124 +1928,6 @@ function GetQuickenSkill(myid)
 	end
 
 	return skill, level
-end
-
-function	GetSOffensiveSkill(myid)
-	local level = 0
-	local skill = 0
-	local skillopt = 0
-	if (IsHomun(myid)==1) then
-		htype=GetV(V_HOMUNTYPE,myid)
-		if (htype==BAYERI and UseBayeriAngriffModus~=0) then
-			skill=MH_ANGRIFFS_MODUS
-			level = 5
-			skillopt=UseBayeriAngriffModus
-		elseif	(htype==DIETER and UseDieterMagmaFlow~=0) then
-			skill=MH_MAGMA_FLOW
-			level = 5
-			skillopt=UseDieterMagmaFlow
-		end
-		return skill,level,skillopt
-	else
-		level=SkillList[MercType][MER_BLESSING]
-		if level~=nil then
-			skill=MER_BLESSING
-		else
-			level=0
-		end
-		return skill,level,UseBlessingSelf
-	end
-end
-
-function	GetSDefensiveSkill(myid)
-	local level = 0
-	local skill = 0
-	local skillopt=0
-	if (IsHomun(myid)==1) then
-		htype=GetV(V_HOMUNTYPE,myid)
-		if (htype==BAYERI and UseBayeriGoldenPherze~=0) then
-			skill=MH_GOLDENE_FERSE
-			level = 5
-			skillopt=UseBayeriGoldenPherze
-		elseif	(htype==DIETER and UseDieterGraniticArmor~=0) then
-			skill=MH_GRANITIC_ARMOR
-			level = 5
-			skillopt=UseDieterGraniticArmor
-		end
-		return skill,level,skillopt
-	else
-		level=SkillList[MercType][MER_KYRIE]
-		if level~=nil then
-			skill=MER_KYRIE
-		else
-			level=0
-		end
-		return skill,level,UseKyrieSelf
-	end
-	return 0,0,0
-end
-
-function	GetSOwnerBuffSkill(myid)
-	local level = 0
-	local skill = 0
-	local skillopt = 0
-	if (IsHomun(myid)==1) then
-		htype=GetV(V_HOMUNTYPE,myid)
-		if (htype==EIRA and UseEiraOveredBoost~=0) then
-			skill=MH_OVERED_BOOST
-			level = 5
-			skillopt=UseEiraOveredBoost
-		elseif	(htype==DIETER and UseDieterPyroclastic~=0) then
-			skill=MH_PYROCLASTIC
-			if DieterPyroclasticLevel==nil then
-				level = 10
-			else
-				level=DieterPyroclasticLevel
-			end
-			skillopt=UseDieterPyroclastic
-		end
-		return skill,level,skillopt
-	else
-		level=SkillList[MercType][MER_INCAGI]
-		if level~=nil then
-			skill=MER_INCAGI
-		else
-			level=0
-		end
-		return skill,level,UseIncAgiSelf
-	end
-	return 0,0,0
-end
-
-function GetSightOrAoE(myid)
-	local level = 0
-	local skill = 0
-	local skillopt = 0
-	if (IsHomun(myid)==1) then
-		htype=GetV(V_HOMUNTYPE,myid)
-		if	(htype==DIETER and UseDieterLavaSlide==1 and LavaSlideMode~=0) then
-			skill=MH_LAVA_SLIDE
-			level = 10
-			skillopt=LavaSlideMode
-		elseif (htype==SERA and PoisonMistMode~=0 and UseSeraPoisonMist==1) then
-			skill=MH_POISON_MIST
-			level = 5
-			skillopt=PoisonMistMode
-		end
-	else
-		if MercType==2 then
-			skill=MER_SIGHT
-			level=1
-			skillopt=UseAutoSight
-		end
-	end
-	if AutoSkillCooldown[skill]~=nil then
-		if GetTick() < AutoSkillCooldown[skill] then -- in cooldown
-			level=0
-			skill=skill
-		end
-	end
-	return skill,level,skillopt
 end
 
 function GetGuardSkill(myid)
@@ -2151,62 +1960,6 @@ function GetGuardSkill(myid)
 
 	return 0, 0
 end
-
-function	GetOffensiveOwnerSkill(myid)
-	local level = 0
-	local skill = 0
-	local skillopt = 0
-	if (IsHomun(myid)==1) then
-		return 0,0,0
-	else
-		level=SkillList[MercType][MER_BLESSING]
-		if level~=nil then
-			skill=MER_BLESSING
-		else
-			level=0
-		end
-		return skill,level,UseBlessingOwner
-	end
-end
-function	GetDefensiveOwnerSkill(myid)
-	local level = 0
-	local skill = 0
-	local skillopt = 0
-	if (IsHomun(myid)==1) then
-		if GetV(V_HOMUNTYPE,MyID)==SERA and UseSeraPainkiller~=0 then
-			level=5
-			return MH_PAIN_KILLER,level,UseSeraPainkiller
-		else
-			return 0,0,0
-		end
-	else
-		level=SkillList[MercType][MER_KYRIE]
-		if level~=nil then
-			skill=MER_KYRIE
-		else
-			level=0
-		end
-		return skill,level,UseKyrieOwner
-	end
-end
-function	GetOtherOwnerSkill(myid)
-	local level = 0
-	local skill = 0
-	local skillopt = 0
-	if (IsHomun(myid)==1) then
-		return 0,0,0
-	else
-		level=SkillList[MercType][MER_INCAGI]
-		if level~=nil then
-			skill=MER_INCAGI
-		else
-			level=0
-		end
-		return skill,level,UseIncAgiOwner
-	end
-end
-
-
 
 function GetHealingSkill(myid)
 	local level = 0

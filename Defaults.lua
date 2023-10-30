@@ -231,19 +231,6 @@ FriendAttack[MOTION_TOSS]=0	--Uses SpearBoom/AidPot/other "throwing" things
 FriendAttack[MOTION_BIGTOSS]=1	--Uses Acid Bomb
 FriendAttack[MOTION_FULLBLAST]=1	--Uses Full Blast
 
-AtkSkillList={MA_DOUBLE,MA_SHARPSHOOTING,ML_PIERCE,ML_SPIRALPIERCE,MS_BASH}
-MobSkillList={MA_SHOWER,MA_SHARPSHOOTING,ML_BRANDISH,MS_MAGNUM,MS_BOWLINGBASH}
-GuardSkillList={ML_AUTOGUARD,MS_PARRYING,MS_REFLECTSHIELD} --,MS_DEFENDER}
-PushSkillList={MA_CHARGEARROW,MA_SKIDTRAP}
-DebuffSkillList={MER_CRASH,MER_PROVOKE,MER_DECAGI,MA_SANDMAN,MA_FREEZINGTRAP,MER_LEXDIVINA}
-
-BasicDebuffs={}
-BasicDebuffs[MER_CRASH]=	1
-BasicDebuffs[MER_LEXDIVINA]=	1
-BasicDebuffs[MER_DECAGI]=	1
-BasicDebuffs[MA_SANDMAN]=	1
-BasicDebuffs[MA_FREEZINGTRAP]=	1
-
 SkillRetryLimit={4,4,4,3,3,3,3,0,2,2,3,3,3} --Guard, Quicken, Mag, SOffensive, SDefensive, SOwnerBuff, Sight/under-owner-ground, style change, Provoke/Painkiller
 SkillRetryLimit[-1]=2 -- for atk skills
 

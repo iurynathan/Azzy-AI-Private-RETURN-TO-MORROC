@@ -82,9 +82,6 @@ if CVersion==nil then
 		TacticVers="Default: "..TactLastSavedDate
 	else
 		TacticVers="Custom, edited "..TactLastSavedDate
-	end	
-	if GetSkillInfo(ML_PIERCE,2,10) > 1 then
-		ErrorCode=ErrorCode.."AI has been modified to use the ranged pierce exploit, this may be illegal on the RO you play, contact your game administrators if you are unsure."
 	end
 	local OutString
 	if ErrorCode=="" then
