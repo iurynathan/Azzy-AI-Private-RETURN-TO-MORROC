@@ -12,14 +12,14 @@
 
 MyRoute={{0,0}}
 
-
-illusionOfClawsLevel = 0
-illusionOfBreathLevel = 0
+--To use "Illusion of Light," I always leave the "illusionOfBreathLevel" value as 0 so that it prioritizes "Illusion of Light." Otherwise, it will use "Illusion of Breath."
 -- Attention, "Illusion of Light" is only used by OCCULT.
 illusionOfLightLevel = 0
-chaoticHealLevel = 0
-bodyDoubleLevel = 0
-warmDefLevel = 0
+illusionOfBreathLevel = 0
+illusionOfClawsLevel = 5
+chaoticHealLevel = 5
+bodyDoubleLevel = 5
+warmDefLevel = 5
 
 healConditions = {
 	[FOLLOW_ST] = 1,
@@ -66,7 +66,7 @@ LogEnable["AAI_SKILLFAIL"]=1
 --LogEnable["AAI_CLOSEST"]=1
 --LogEnable["AAI_DANCE"]=1
 --LogEnable["AAI_ACTORS"]=1
--- LogEnable["AAI_MOBCOUNT"]=1
+LogEnable["AAI_MOBCOUNT"]=1
 
 --Uncomment this line to suppress AAI_ERROR logging. This should only be done as a stop-gap measure; if your AAI_ERROR log is filling up with messages, please report this to the developer. 
 LogEnable["AAI_ERROR"]=1
