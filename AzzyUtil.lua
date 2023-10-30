@@ -1923,7 +1923,7 @@ function GetMobSkill(myid)
 	if (IsHomun(myid)==1) then
 		homunculuType = GetV(V_HOMUNTYPE,MyID)
 		
-		if (homunculuType == RAGING) then
+		if (homunculuType == OCCULT) then
 			skill = S_ILLUSION_OF_LIGHT
 
 			if (illusionOfLightLevel == nil) then
