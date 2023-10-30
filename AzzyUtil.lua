@@ -1791,6 +1791,8 @@ function GetAtkSkill(myid)
 			skill = S_ILLUSION_OF_BREATH
 
 			if (aggro >= AutoMobCount) then
+				skill = S_ILLUSION_OF_LIGHT
+
 				if (illusionOfLightLevel == 0) then
 					level = 0
 				elseif (GetTick() < AutoSkillCooldown[skill]) then
