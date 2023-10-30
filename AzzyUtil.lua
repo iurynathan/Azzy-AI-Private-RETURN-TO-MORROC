@@ -1785,19 +1785,33 @@ function GetAtkSkill(myid)
 	local level = 0
 	if (IsHomun(myid) == 1) then
 		homunculuType = GetV(V_HOMUNTYPE,myid)
+		local aggro = GetAggroCount()
 
 		if (homunculuType == OCCULT) then
 			skill = S_ILLUSION_OF_BREATH
 
-			if (illusionOfBreathLevel == 0) then
-				level = 0
-			elseif (GetTick() < AutoSkillCooldown[skill]) then
-				level = 0
-				skill = 0
-			elseif (illusionOfBreathLevel == nil and illusionOfBreathLevel > 0) then
-				level = 10
+			if (aggro >= AutoMobCount) then
+				if (illusionOfLightLevel == 0) then
+					level = 0
+				elseif (GetTick() < AutoSkillCooldown[skill]) then
+					level = 0
+					skill = 0
+				elseif (illusionOfLightLevel == nil) then
+					level = 10
+				else
+					level = illusionOfLightLevel
+				end
 			else
-				level = illusionOfBreathLevel
+				if (illusionOfBreathLevel == 0) then
+					level = 0
+				elseif (GetTick() < AutoSkillCooldown[skill]) then
+					level = 0
+					skill = 0
+				elseif (illusionOfBreathLevel == nil) then
+					level = 10
+				else
+					level = illusionOfBreathLevel
+				end
 			end
 		else
 			skill = S_ILLUSION_OF_CLAWS
@@ -1807,7 +1821,7 @@ function GetAtkSkill(myid)
 			elseif (GetTick() < AutoSkillCooldown[skill]) then
 				level = 0
 				skill = 0
-			elseif (illusionOfClawsLevel == nil and illusionOfClawsLevel > 0) then
+			elseif (illusionOfClawsLevel == nil) then
 				level = 5
 			else
 				level = illusionOfClawsLevel

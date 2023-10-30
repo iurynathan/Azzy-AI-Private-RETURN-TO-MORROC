@@ -1077,7 +1077,7 @@ function OnATTACK_ST ()
 								mobmode=1
 							end
 							mobskillcount=GetMobCount(v[2],math.min(v[3],mobskill_level),MyEnemy,mobmode)
-							TraceAI2("Attack -> mobskillcount="..mobskillcount.."tact_skillclass="..tact_skillclass.."class_mob="..CLASS_MOB.."AutoMobCount="..AutoMobCount.." "..FormatSkill(v[2],math.min(v[3],mobskill_level)))
+							-- TraceAI2("Attack -> mobskillcount="..mobskillcount.."tact_skillclass="..tact_skillclass.."class_mob="..CLASS_MOB.."AutoMobCount="..AutoMobCount.." "..FormatSkill(v[2],math.min(v[3],mobskill_level)))
 							if (mobskillcount >= AutoMobCount or tact_skillclass == CLASS_MOB) then
 								if (availsp >= GetSkillInfo(v[2],3,math.min(v[3],mobskill_level)))then
 									if (skilltouse[1] < 2) then
