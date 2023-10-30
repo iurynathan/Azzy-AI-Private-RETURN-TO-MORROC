@@ -1938,13 +1938,13 @@ function GetMobSkill(myid)
 	if (IsHomun(myid)==1) then
 		homunculuType = GetV(V_HOMUNTYPE,MyID)
 		
-		if (homunculuType == RAGING) then
-			skill = S_CHAOTIC_HEAL
+		if (homunculuType == OCCULT) then
+			skill = S_ILLUSION_OF_LIGHT
 
-			if (chaoticHealLevel == nil) then
+			if (illusionOfLightLevel == nil) then
 				level = 5
 			else
-				level = chaoticHealLevel
+				level = illusionOfLightLevel
 			end
 		end
 		if AutoSkillCooldown[skill]~=nil then
