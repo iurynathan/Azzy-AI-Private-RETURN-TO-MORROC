@@ -33,23 +33,11 @@ V_MERTYPE		  	=	12
 V_POSITION_APPLY_SKILLATTACKRANGE = 13	
 V_SKILLATTACKRANGE_LEVEL = 14	
 --Homun and merc type IDs--
-LIF			= 1
+WARD			= 1
 OCCULT = 2
 AGILE = 3
 RAGING		= 4
 
-LIF2			= 5
-AMISTR2			= 6
-FILIR2			= 7
-VANILMIRTH2		= 8
-LIF_H			= 9
-AMISTR_H		= 10
-FILIR_H			= 11
-VANILMIRTH_H		= 12
-LIF_H2			= 13
-AMISTR_H2		= 14
-FILIR_H2		= 15
-VANILMIRTH_H2		= 16
 EIRA			= 48
 BAYERI			= 49  --because sources can't agree on correct spelling
 BEYERI			= 49

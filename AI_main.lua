@@ -2307,17 +2307,6 @@ function	OnIDLEWALK_ST ()
 	local ox,oy=GetV(V_POSITION,GetV(V_OWNER,MyID))
 	local motion=GetV(V_MOTION,MyID)
 	if (GetDistanceAPR(MyID,MyDestX,MyDestY)<=1) then --we're there.
-		if OldHomunType==AMISTR and UseCastleRoute==1 and (UseIdleWalk==5 or UseIdleWalk==6) and RelativeRoute==0 and GetDistanceP(x,y,ox,oy) > 2 then
-			if GetTick() > AutoSkillTimeout then
-				DoSkill(HAMI_CASTLE,5,MyID)
-				TraceAI("Castle Route: Casting castling on self")
-			else
-				TraceAI("Castle Route: Skill timeout not OK - can't cast castling")
-			end
-			return
-		elseif UseCastleRoute==1 and OldHomunType==AMISTR and RelativeRoute==0 then
-			TraceAI("We're set to use castling route, but can't, UseIdleWalk="..UseIdleWalk.." distance: "..GetDistanceP(x,y,ox,oy))
-		end
 		MyDestX,MyDestY=GetIdleWalkDest(MyID)
 	elseif (GetDistanceAPR(MyID,MyDestX,MyDestY)>=1) and (IdleWalkTries > 6 or GetDistanceAPR(GetV(V_OWNER,MyID),MyDestX,MyDestY) > GetMoveBounds()) then 
 		MyDestX,MyDestY=GetIdleWalkDest(MyID)
@@ -3175,14 +3164,6 @@ function AI(myid)
 						DoSkill(MH_STEINWAND,5,MyID)
 						TraceAI("CAST_REACT_STIEN being enabled against target"..k.." with tactic "..tactcast)
 					
-						return
-					end
-				end
-			elseif tactcast == CAST_REACT_CASTLE then
-				if (modulo(GetV(V_HOMUNTYPE,MyID),4)==AMISTR or OldHomunType==AMISTR) and v[2]==2 then
-					if AutoSkillTimeout < GetTick() and GetSkillInfo(HAMI_CASTLE,3,5) < GetV(V_SP,MyID) then
-						DoSkill(HAMI_CASTLE,5,MyID)
-						TraceAI("CAST_REACT_CASTLE being enabled against target"..k.." with tactic "..tactcast)
 						return
 					end
 				end
