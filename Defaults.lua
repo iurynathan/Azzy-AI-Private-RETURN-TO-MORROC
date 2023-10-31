@@ -62,34 +62,10 @@ UseHomunSSkillAttack 		= 1
 AutoSkillDelay          	= 0 
 AoEMaximizeTargets					=  0
 CastTimeRatio				= 0
-UseEiraXenoSlasher			=0 
-EiraXenoSlasherLevel		=4 
-UseEiraEraseCutter			=1
-EiraEraseCutterLevel		=4 
-UseEiraSilentBreeze		= 0
-EiraSilentBreezeLevel	=5 
-UseBayeriStahlHorn			=1
-BayeriStahlHornLevel		=5
-UseBayeriHailegeStar		=1
-BayeriHailegeStarLevel		=5
-UseBayeriSteinWand			=0
-BayeriSteinWandLevel		=5
 UseSteinWandSelfMob			=2
 UseSteinWandOwnerMob		=2
 UseSteinWandTele			=0 
 StienWandTelePause 			=3000
-UseSeraParalyze				=1
-SeraParalyzeLevel			=5
-UseSeraPoisonMist			=0 
-SeraPoisonMistLevel			=5
-UseSeraCallLegion			=1 
-SeraCallLegionLevel			=5
-UseEleanorSonicClaw			=1
-EleanorSonicClawLevel		=5
-EleanorSilverveinLevel		=5
-EleanorMidnightLevel		=5
-UseDieterLavaSlide			=1 
-DieterLavaSlideLevel		=10
 
 
 --Autobuff options
@@ -107,15 +83,6 @@ LifEscapeLevel  =5
 FilirFlitLevel  =1
 FilirAccelLevel =1
 AmiBulwarkLevel =5
-UseSeraPainkiller = 0
-
-UseBayeriAngriffModus	=0
-UseBayeriGoldenPherze	=0
-UseDieterMagmaFlow	=0
-UseDieterGraniticArmor	=0
-UseDieterPyroclastic	=0
-DieterPyroclasticLevel	=10
-UseEiraOveredBoost		=0
 
 --AutoHeal Options:
 HealSelfHP		= 50 

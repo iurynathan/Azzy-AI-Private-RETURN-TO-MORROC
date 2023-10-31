@@ -40,38 +40,6 @@ function doInit(myid)
 	if loadtimesuccess==false then
 		logstring=logstring.."\nfailed to load timeouts for owner "..GetV(V_OWNER,MyID).." if this is the first time you've used this account with AzzyAI, disregard this message"
 	end
-	if GetV(V_SKILLATTACKRANGE,myid,S_CHAOTIC_HEAL) > 1 then -- it was a vani
-		OldHomunType=RAGING
-	end
-	if GetV(V_SKILLATTACKRANGE,myid,MH_XENO_SLASHER) == 1 then 
-		if UseEiraXenoSlasher and GetV(V_HOMUNTYPE,myid)==EIRA then
-			logstring=logstring.."UseEiraXenoSlasher disabled - you don't have the skill!"
-		end
-		UseEiraXenoSlasher=0
-	end
-	if GetV(V_SKILLATTACKRANGE,myid,MH_NEEDLE_OF_PARALYZE) == 1 then
-		if UseSeraParalyze and GetV(V_HOMUNTYPE,myid)==SERA then
-			UseSeraParalyze=0
-			logstring=logstring.."UseSeraParalyze disabled - you don't have the skill!"
-		end
-		UseSeraParalyze=0
-	end
-	if GetV(V_SKILLATTACKRANGE,myid,MH_POISON_MIST) < 2 then 
-		if UseSeraPoisonMist and GetV(V_HOMUNTYPE,myid)==SERA then
-			logstring=logstring.."UseSeraPoisonMist disabled - you don't have the skill!"
-		end
-		if UseSeraPainkiller and GetV(V_HOMUNTYPE,myid)==SERA then
-			logstring=logstring.."UseSeraPainkiller disabled - you don't have the skill!"
-		end
-		UseSeraPoisonMist=0
-		UseSeraPainkiller=0
-	end
-	if GetV(V_SKILLATTACKRANGE,myid,MH_LAVA_SLIDE) == 1 then
-		if UseDieterLavaSlide and GetV(V_HOMUNTYPE,myid)==DIETER then
-			logstring=logstring.."UseDieterLavaSlide disabled - you don't have the skill!"
-		end
-		UseDieterLavaSlide=0
-	end
 	OutFile=io.open("AAIStartH.txt","a")
 	if OutFile == nil then
 		Error("No write permissions for RO folder, please fix permissions on the RO folder in order to use AzzyAI. Version Info: "..OutString)
@@ -754,29 +722,11 @@ function	OnCHASE_ST ()
 								end
 							end
 						end
-					elseif (skilltype ==DEBUFF_ATK and ChaseDebuffUsed==0) then
-							if (tact_debuff*-1 == v[2] or (tact_debuff==-1 and BasicDebuffs[v[2]]~=nil)) then
-								if (availsp-ReserveSP >= GetSkillInfo(v[2],3,math.min(v[3],skill_level))) then
-									skilltouse=v
-								end
-							end
 					elseif (skilltype==MAIN_ATK and (MySkillUsedCount < tact_skill or tact_skill==SKILL_ALWAYS or (BerserkMode==1 and Berserk_SkillAlways==1)) and (tact_skillclass < 1 or tact_skillclass==CLASS_MIN_OLD )) then
 						if (availsp-ReserveSP >= GetSkillInfo(v[2],3,math.min(v[3],skill_level))) then
 							skilltouse=v
 						end
-					elseif (skilltype==S_ATK and UseHomunSSkillChase==1 and (MySkillUsedCount < tact_skill or tact_skill==SKILL_ALWAYS or (BerserkMode==1 and Berserk_SkillAlways==1)) and (tact_skillclass==CLASS_S or tact_skillclass==CLASS_BOTH or tact_skillclass==CLASS_MIN_S or ((tact_skillclass==CLASS_COMBO_1 or tact_skillclass==CLASS_COMBO_2) and v[2]==MH_SONIC_CLAW))) then
-						if (availsp-ReserveSP >= GetSkillInfo(v[2],3,math.min(v[3],skill_level))) then
-							skilltouse=v
-						end
-					elseif (skilltype==COMBO_ATK and UseHomunSSkillChase==1 and (AutoComboMode==2 or (AutoComboMode==1 and (tact_skillclass == CLASS_COMBO_1 or tact_skillclass==CLASS_COMBO_2)) or Berserk_ComboAlways==1) and (MySkillUsedCount < tact_skill or tact_skill==SKILL_ALWAYS or (BerserkMode==1 and Berserk_SkillAlways==1)) and (v[2] == MH_SILVERVEIN_RUSH or tact_skillclass~=CLASS_COMBO_1)) then
-						if (availsp-ReserveSP >= GetSkillInfo(v[2],3,math.min(v[3],skill_level))) then
-							skilltouse=v
-						end
-					elseif (skilltype==GRAPPLE_ATK and UseHomunSSkillChase==1 and (AutoComboMode==2 or (AutoComboMode==1 and tact_skillclass > 5) or Berserk_ComboAlways==1) and (MySkillUsedCount < tact_skill or tact_skill==SKILL_ALWAYS or (BerserkMode==1 and Berserk_SkillAlways==1)) and (v[2] == MH_TINDER_BREAKER or (v[2]==MH_CBC and tact_skillclass~=CLASS_GRAPPLE) or tact_skillclass==CLASS_GRAPPLE_2 )) then
-						if (availsp-ReserveSP >= GetSkillInfo(v[2],3,math.min(v[3],skill_level))) then
-							skilltouse=v
-						end
-					elseif (skilltype==MINION_ATK and UseHomunSSkillChase==1 and (MySkillUsedCount < tact_skill or tact_skill==SKILL_ALWAYS or (BerserkMode==1 and Berserk_SkillAlways==1)) and (tact_skillclass==CLASS_MINION or tact_skillclass==CLASS_MIN_OLD or tact_skillclass==CLASS_MIN_S)) then
+					elseif (skilltype==S_ATK and UseHomunSSkillChase==1 and (MySkillUsedCount < tact_skill or tact_skill==SKILL_ALWAYS or (BerserkMode==1 and Berserk_SkillAlways==1)) and (tact_skillclass==CLASS_S or tact_skillclass==CLASS_BOTH or tact_skillclass==CLASS_MIN_S or ((tact_skillclass==CLASS_COMBO_1 or tact_skillclass==CLASS_COMBO_2)))) then
 						if (availsp-ReserveSP >= GetSkillInfo(v[2],3,math.min(v[3],skill_level))) then
 							skilltouse=v
 						end
@@ -1012,9 +962,6 @@ function OnATTACK_ST ()
 		if target ~=0 then
 			snipeskill=0
 			local snipe_tact_skillclass=GetTact(TACT_SKILLCLASS,target)
-			if snipe_tact_skillclass == CLASS_MINION then
-				snipeskill,snipelevel=GetMinionSkill(MyID)
-			end
 			if snipeskill==0 and (snipe_tact_skillclass == CLASS_S or snipe_tact_skillclass == CLASS_BOTH or snipe_tact_skillclass == CLASS_MIN_S) then
 				snipeskill,snipelevel=GetSAtkSkill(MyID)
 			end
@@ -1082,29 +1029,11 @@ function OnATTACK_ST ()
 									end
 								end
 							end
-						elseif (skilltype ==DEBUFF_ATK and AttackDebuffUsed < AttackDebuffLimit and (IsFriendOrSelf(GetV(V_TARGET,MyEnemy))==1 or AttackDebuffWhenAttacked~=1)) then
-							if (tact_debuff == v[2] or (tact_debuff==1 and BasicDebuffs[v[2]]~=nil)) then
-								if (availsp-ReserveSP >= GetSkillInfo(v[2],3,math.min(v[3],skill_level))) then
-									skilltouse=v
-								end
-							end
 						elseif (skilltype==MAIN_ATK and (MySkillUsedCount < tact_skill or tact_skill==SKILL_ALWAYS or (BerserkMode==1 and Berserk_SkillAlways==1)) and (tact_skillclass < 1 or tact_skillclass==CLASS_MIN_OLD )) then
 							if (availsp-ReserveSP >= GetSkillInfo(v[2],3,math.min(v[3],skill_level))) then
 								skilltouse=v
 							end
-						elseif (skilltype==S_ATK and UseHomunSSkillAttack==1 and (MySkillUsedCount < tact_skill or tact_skill==SKILL_ALWAYS or (BerserkMode==1 and Berserk_SkillAlways==1)) and (tact_skillclass==CLASS_S or tact_skillclass==CLASS_BOTH or tact_skillclass==CLASS_MIN_S or ((tact_skillclass==CLASS_COMBO_1 or tact_skillclass==CLASS_COMBO_2) and v[2]==MH_SONIC_CLAW))) then
-							if (availsp-ReserveSP >= GetSkillInfo(v[2],3,math.min(v[3],skill_level))) then
-								skilltouse=v
-							end
-						elseif (skilltype==COMBO_ATK and UseHomunSSkillAttack==1 and (AutoComboMode==2 or (AutoComboMode==1 and (tact_skillclass == CLASS_COMBO_1 or tact_skillclass==CLASS_COMBO_2)) or Berserk_ComboAlways==1) and (MySkillUsedCount < tact_skill or tact_skill==SKILL_ALWAYS or (BerserkMode==1 and Berserk_SkillAlways==1)) and (v[2] == MH_SILVERVEIN_RUSH or tact_skillclass~=CLASS_COMBO_1)) then
-							if (availsp-ReserveSP >= GetSkillInfo(v[2],3,math.min(v[3],skill_level))) then
-								skilltouse=v
-							end
-						elseif (skilltype==GRAPPLE_ATK and UseHomunSSkillAttack==1 and (AutoComboMode==2 or (AutoComboMode==1 and tact_skillclass > 5) or Berserk_ComboAlways==1) and (MySkillUsedCount < tact_skill or tact_skill==SKILL_ALWAYS or (BerserkMode==1 and Berserk_SkillAlways==1)) and (v[2] == MH_TINDER_BREAKER or (v[2]==MH_CBC and tact_skillclass~=CLASS_GRAPPLE) or tact_skillclass==CLASS_GRAPPLE_2 )) then
-							if (availsp-ReserveSP >= GetSkillInfo(v[2],3,math.min(v[3],skill_level))) then
-								skilltouse=v
-							end
-						elseif (skilltype==MINION_ATK and UseHomunSSkillAttack==1 and (MySkillUsedCount < tact_skill or tact_skill==SKILL_ALWAYS or (BerserkMode==1 and Berserk_SkillAlways==1)) and (tact_skillclass==CLASS_MINION or tact_skillclass==CLASS_MIN_OLD or tact_skillclass==CLASS_MIN_S)) then
+						elseif (skilltype==S_ATK and UseHomunSSkillAttack==1 and (MySkillUsedCount < tact_skill or tact_skill==SKILL_ALWAYS or (BerserkMode==1 and Berserk_SkillAlways==1)) and (tact_skillclass==CLASS_S or tact_skillclass==CLASS_BOTH or tact_skillclass==CLASS_MIN_S or ((tact_skillclass==CLASS_COMBO_1 or tact_skillclass==CLASS_COMBO_2)))) then
 							if (availsp-ReserveSP >= GetSkillInfo(v[2],3,math.min(v[3],skill_level))) then
 								skilltouse=v
 							end
@@ -1142,10 +1071,6 @@ function OnATTACK_ST ()
 		TraceAI("Skill Attack: "..MySkill.." target: "..MyEnemy.." level:"..MySkillLevel)
 		SkillTarget=MyEnemy
 		if MySkill ~=0 then
-			if GetV(V_HOMUNTYPE,MyID) == ELEANOR then
-				MySpheres = math.max(math.min(10,MySpheres+1/SphereTrackFactor),0)
-				UpdateTimeoutFile()
-			end
 			DoSkill(MySkill,MySkillLevel,SkillTarget,-1,SkillTargetX,SkillTargetY)
 		end
 	end
@@ -1913,7 +1838,6 @@ function	GetEnemyList (myid,aggro)
 	if aggro==2 then
 		sskill,slevel=GetSAtkSkill(MyID)
 		oskill,olevel=GetAtkSkill(MyID)
-		mskill,mlevel=GetMinionSkill(MyID)
 	end
 	local HomunType = GetV(V_HOMUNTYPE,myid)
 	TraceAI("GetEnemyList with aggro "..aggro)
@@ -2771,10 +2695,6 @@ function AI(myid)
 	TakenCells={} --OccupiedCellDetection 
 	tMobID=""
 	TankMonsterCount=0
-	local seralegionCount=0
-	SeraLegionList=""
-	local seralegionActive=0
-	local seralegionBugged=0
 	for i,v in ipairs(actors) do
 		local x,y = GetV(V_POSITION,v)
 		TakenCells[x.."_"..y]=1
@@ -2794,18 +2714,6 @@ function AI(myid)
 			if (false == IsOutOfSight(myid,v)) then
 				Actors[v]=1
 				--TraceAI(v.." of type "..GetV(V_HOMUNTYPE,v).." in sight")
-				if GetV(V_HOMUNTYPE,MyID)==SERA then
-					local actortype=GetV(V_HOMUNTYPE,v)
-					if (actortype > 2157 and actortype < 2161) then
-						seralegionCount=seralegionCount+1
-						SeraLegionList=SeraLegionList..v.." "
-						if GetV(V_MOTION,v)==MOTION_STAND and GetDistanceAR(MyID,v)>3 then
-							seralegionBugged=seralegionBugged+1
-						else 
-							seralegionActive=seralegionActive+1
-						end
-					end
-				end
 				if (v < MagicNumber2) then
 					Players[v]=1
 					if MyFriends[v]==FRIEND and GetV(V_OWNER,MyID)~=v then --Newly appeared on screen
@@ -3157,15 +3065,6 @@ function AI(myid)
 					MyState=OnSKILL_OBJECT_CMD_ST
 					TraceAI("CAST_REACT_(skill) being enabled against target"..k.." with tactic "..tactcast.." with "..FormatSkill(skill,level))
 					break
-				end
-			elseif tactcast == CAST_REACT_STIEN then
-				if GetV(V_HOMUNTYPE,MyID)==BAYERI then
-					if AutoSkillTimeout < GetTick() and GetSkillInfo(MH_STEINWAND,3,5) < GetV(V_SP,MyID) then
-						DoSkill(MH_STEINWAND,5,MyID)
-						TraceAI("CAST_REACT_STIEN being enabled against target"..k.." with tactic "..tactcast)
-					
-						return
-					end
 				end
 			end
 		end

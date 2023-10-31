@@ -1818,67 +1818,6 @@ function GetPushbackSkill(myid)
 	return 0,0
 end
 
-
-function GetDebuffSkill(myid)
-	if (IsHomun(myid)==1) then
-		if GetV(V_HOMUNTYPE,MyID)==EIRA and UseEiraSilentBreeze==1 then
-			skill=MH_SILENT_BREEZE
-			if EiraSilentBreezeLevel==nil then
-				level=5
-			else
-				level=EiraSilentBreezeLevel
-			end
-			return skill,level
-		elseif GetV(V_HOMUNTYPE,MyID)==DIETER and UseDieterVolcanicAsh==1 then
-			skill=MH_VOLCANIC_ASH
-			level=5
-			local t = GetTick()
-			if (AshTimeout[1] < t or AshTimeout[2] < t or AshTimeout[3] < t) then
-				return skill,level
-			else 
-				return 0,0
-			end
-		end
-	else
-		for i,v in ipairs(DebuffSkillList) do
-			level = SkillList[MercType][v]
-			if level ~= nil then
-				skill=v
-				return skill,level
-			end
-		end
-	end
-	return 0,0
-end
-
-function GetMinionSkill(myid)
-	local level,skill=0,0
-	if (IsHomun(myid)==1) then
-		if GetV(V_HOMUNTYPE,MyID)==SERA and UseSeraCallLegion==1 then
-			skill=MH_SUMMON_LEGION
-			TraceAI("GetMinionSkill"..skill)
-			if SeraCallLegionLevel == nil then
-				level=5
-			elseif SeraCallLegionLevel < 1 then
-				skill,level=0,0
-			elseif SeraCallLegionLevel > 5 then
-				level=5
-			else
-				level=SeraCallLegionLevel
-			end
-			TraceAI("GetMinionSkill "..skill..level)
-			if AutoSkillCooldown[skill]~=nil then
-				if GetTick() < AutoSkillCooldown[skill] then -- in cooldown
-					level=0
-					skill=0
-				end
-			end
-			return skill,level
-		end
-	end
-	return 0,0
-end
-
 function GetMobSkill(myid)
 	local skill = 0
 	local level = 0
@@ -1993,11 +1932,11 @@ function GetTargetedSkills(myid)
 	Satk={S_ATK,s,l}
 	s,l=GetMobSkill(myid)
 	Mobatk={MOB_ATK,s,l}
-	s,l=GetDebuffSkill(myid)
-	Debuffatk={DEBUFF_ATK,s,l}
-	s,l=GetMinionSkill(myid)
-	Minionatk={MINION_ATK,s,l}
-	result={Mainatk,Satk,Mobatk,Debuffatk,Minionatk}
+	result={
+		Mainatk,
+		Satk,
+		Mobatk
+	}
 	return result
 end
 
