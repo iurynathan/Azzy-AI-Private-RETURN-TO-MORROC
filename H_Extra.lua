@@ -1,9 +1,3 @@
--- Homun IDs
--- Raging Kimi = 4
--- Agile Kimi = 3
--- Occult Kimi = 2
--- Ward Kimi = 1
-
 -- This is the Extra Options file
 -- NewAutoFriend = 0 -- uncomment this if you're not using AzzyAI for your mercenary.
 -- AggressiveRelogTracking = 1               -- see documentation
@@ -13,9 +7,10 @@
 MyRoute={{0,0}}
 
 --To use "Illusion of Light," I always leave the "illusionOfBreathLevel" value as 0 so that it prioritizes "Illusion of Light." Otherwise, it will use "Illusion of Breath."
--- Attention, "Illusion of Light" is only used by OCCULT.
 illusionOfLightLevel = 0
 illusionOfBreathLevel = 0
+--To use "Illusion of Crusher," I always leave the "illusionOfClawsLevel" value as 0 so that it prioritizes "Illusion of Crusher." Otherwise, it will use "Illusion of Claws."
+illusionOfCrusherLevel = 0
 illusionOfClawsLevel = 5
 chaoticHealLevel = 5
 bodyDoubleLevel = 5
@@ -54,12 +49,12 @@ Dr. Azzy takes no responsibility for your lua programming; I barely take respons
 
 
 --Uncomment the lines below to enable expanded logging. See documentation. 
-LogEnable["AAI_SKILLFAIL"]=1
--- LogEnable["AAI_CostSP"]=1
+--LogEnable["AAI_SKILLFAIL"]=1
+--LogEnable["AAI_CostSP"]=1
 --LogEnable["AAI_CLOSEST"]=1
 --LogEnable["AAI_DANCE"]=1
 --LogEnable["AAI_ACTORS"]=1
-LogEnable["AAI_MOBCOUNT"]=1
+--LogEnable["AAI_MOBCOUNT"]=1
 
 --Uncomment this line to suppress AAI_ERROR logging. This should only be done as a stop-gap measure; if your AAI_ERROR log is filling up with messages, please report this to the developer. 
-LogEnable["AAI_ERROR"]=1
+--LogEnable["AAI_ERROR"]=1

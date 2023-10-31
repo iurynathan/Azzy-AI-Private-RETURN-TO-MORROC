@@ -13,6 +13,7 @@ S_WARM_DEF = 8006
 S_CHAOTIC_HEAL = 8014
 S_BODY_DOUBLE = 8022
 S_ILLUSION_OF_BREATH = 8024
+S_ILLUSION_CRUSHER = 8031
 S_ILLUSION_OF_LIGHT = 8034
 
 --SkillList[homuntype][skillid] = level
@@ -25,6 +26,7 @@ SkillList={}
 
 SkillList[AGILE] = {}
 SkillList[AGILE][S_ILLUSION_OF_CLAWS] = 5
+SkillList[AGILE][S_ILLUSION_CRUSHER] = 5
 SkillList[AGILE][S_CHAOTIC_HEAL] = 5
 SkillList[AGILE][S_WARM_DEF] = 5
 SkillList[AGILE][S_BODY_DOUBLE] = 5
@@ -46,6 +48,7 @@ SkillList[OCCULT][S_BODY_DOUBLE] = 5
 
 SkillList[RAGING] = {}
 SkillList[RAGING][S_ILLUSION_OF_CLAWS] = 5
+SkillList[RAGING][S_ILLUSION_CRUSHER] = 5
 SkillList[RAGING][S_CHAOTIC_HEAL] = 5
 SkillList[RAGING][S_WARM_DEF] = 5
 SkillList[RAGING][S_BODY_DOUBLE] = 5
@@ -56,6 +59,7 @@ SkillList[RAGING][S_BODY_DOUBLE] = 5
 
 SkillList[WARD] = {}
 SkillList[WARD][S_ILLUSION_OF_CLAWS] = 5
+SkillList[WARD][S_ILLUSION_CRUSHER] = 5
 SkillList[WARD][S_CHAOTIC_HEAL] = 5
 SkillList[WARD][S_WARM_DEF] = 5
 SkillList[WARD][S_BODY_DOUBLE] = 5
@@ -80,6 +84,18 @@ SkillInfo[S_ILLUSION_OF_CLAWS] = {
   {1,1,1,1,1}, -- Range
   {5,10,15,20,25}, -- SP Cost
   {100,100,100,100,100}, -- Fixed cast (ms)
+  {0,0,0,0,0}, -- Variable cast (ms)
+  {0,0,0,0,0}, -- Delay (ms)
+  1, -- Target mode (0 = self targeted, 1 = enemy targeted, 2 = ground targeted) 
+  {0,0,0,0,0}, -- Duration (ms)
+  {0,0,0,0,0}, -- Reuse Delay (ms)
+}
+
+SkillInfo[S_ILLUSION_CRUSHER] = {
+  "Illusion of Crusher", --Skill Name
+  {1,1,1,1,1}, -- Range
+  {50,75,100,125,150}, -- SP Cost
+  {0,0,0,0,0}, -- Fixed cast (ms)
   {0,0,0,0,0}, -- Variable cast (ms)
   {0,0,0,0,0}, -- Delay (ms)
   1, -- Target mode (0 = self targeted, 1 = enemy targeted, 2 = ground targeted) 

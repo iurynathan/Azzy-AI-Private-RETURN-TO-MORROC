@@ -1,5 +1,5 @@
 -- AzzyAI Constant File
-CVersion = "1.61"
+CVersion = "1.7"
 
 --[[
 function	TraceAI (string) end

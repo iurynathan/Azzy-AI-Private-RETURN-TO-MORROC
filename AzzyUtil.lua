@@ -4,6 +4,7 @@
 -- it is reccomended that you use the seperately available
 -- version, which does not utilize AAI-specific systems. 
 -- Written by Dr. Azzy of iRO Chaos
+-- Customized for the 'Return of Morroc' server by Nathan.
 AUVersion="1.6"
 -------------------------------
 --[[
@@ -57,20 +58,13 @@ ex
 local skill,level = GetMobSkill(MyID)
 
 GetQuickenSkill(id)
-Returns a list containing the ID of the weapon quicken skill posessed by the mercenary and the skill level
+Returns a list containing the ID of the Body Double skill
 
 ex
 local skill,level = GetQuickenSkill(MyID)
 
 GetGuardSkill(id)
-As GetQuickenSkill() only returns the ID of the guard or parry skill posessed by the mercenary.
-
-GetProvokeSkill(id)
-As GetQuiceknSkill() only returns the ID and other perameters for the Provoke skill posessed by the mercenary. 
-
-GetPushbackSkill(id)
-As GetMobSkill() only returns the ID and other perameters for the pushback skill (arrow repel or skid trap) posessed by the mercenary
-
+As GetQuickenSkill() only returns the ID of the Warm Defense skill.
 --]]--
 
 
@@ -1709,33 +1703,37 @@ function GetAtkSkill(myid)
 				end
 			end
 		else
-			skill = S_ILLUSION_OF_CLAWS
+			if (illusionOfClawsLevel > 0) then
+				skill = S_ILLUSION_OF_CLAWS
 
-			if (illusionOfClawsLevel == 0) then
-				level = 0
-			elseif (GetTick() < AutoSkillCooldown[skill]) then
-				level = 0
-				skill = 0
-			elseif (illusionOfClawsLevel == nil) then
-				level = 5
+				if (illusionOfClawsLevel == 0) then
+					level = 0
+				elseif (GetTick() < AutoSkillCooldown[skill]) then
+					level = 0
+					skill = 0
+				elseif (illusionOfClawsLevel == nil) then
+					level = 5
+				else
+					level = illusionOfClawsLevel
+				end
 			else
-				level = illusionOfClawsLevel
+				skill = S_ILLUSION_CRUSHER
+
+				if (illusionOfCrusherLevel == 0) then
+					level = 0
+				elseif (GetTick() < AutoSkillCooldown[skill]) then
+					level = 0
+					skill = 0
+				elseif (illusionOfCrusherLevel == nil) then
+					level = 5
+				else
+					level = illusionOfCrusherLevel
+				end
 			end
 		end
 
 		if (level ~= 0) then
 			return skill, level
-		end
-
-	else
-		for i, v in ipairs(AtkSkillList) do
-			level = SkillList[MercType][v]
-
-			if (level ~= nil) then
-				skill = v
-
-				return skill, level
-			end
 		end
 	end
 

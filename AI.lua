@@ -4,6 +4,7 @@
 -- Permission granted to distribute in unmodified form
 -- Please contact me via the iRO Forums if you wish to modify
 -- so that we can work together to extend and improve this AI.
+-- Customized for the 'Return of Morroc' server by Nathan.
 -----------------------------
 Version="1.6"
 ErrorCode=""
@@ -27,7 +28,7 @@ dofile("./AI_sakray/USER_AI/H_Extra.lua")
 
 local logFileName = "AAI_TraceAI.log"
 
-function TraceAI2(message)
+function TraceAI(message)
     -- Abra o arquivo de log no modo de anexar (para adicionar novas mensagens ao arquivo)
     local logFile = io.open(logFileName, "a")
 
@@ -64,7 +65,7 @@ function WriteStartupLog(Version,ErrorCode,ErrorInfo)
 		CVersion="1.30b or earlier"
 		ErrorCode="File version error"
 		ErrorInfo=ErrorInfo.."Const_.lua no version found"
-	elseif string.gfind(CVersion,verspattern)()~="1.61" then
+	elseif string.gfind(CVersion,verspattern)()~="1.7" then
 		ErrorCode="File version error"
 		ErrorInfo=ErrorInfo.."Const_.lua wrong version "..string.gfind(CVersion,verspattern)().."\n"
 	end
@@ -72,7 +73,7 @@ function WriteStartupLog(Version,ErrorCode,ErrorInfo)
 		MainVersion="1.30b or earlier"
 		ErrorCode="File version error"
 		ErrorInfo=ErrorInfo.." AI_main.lua no version found"
-	elseif string.gfind(MainVersion,verspattern)()~="1.6" then
+	elseif string.gfind(MainVersion,verspattern)()~="1.7" then
 		ErrorCode="File version error"
 		ErrorInfo=ErrorInfo.."AI_main.lua wrong version "..string.gfind(MainVersion,verspattern)().."\n"
 	end

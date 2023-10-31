@@ -4,13 +4,15 @@
 -- This AI is intended for use on official servers only
 -- Permission granted to distribute in unmodified form.
 -- You may expand the AI freely through the M_Extra and H_Extra files
-MainVersion="1.6"
+-- Customized for the 'Return of Morroc' server by Nathan.
+MainVersion="1.7"
 
 ResCmdList			= List.new()
 -- As of dev 15, global variables are now in Const_.lua
 
 AutoSkillCooldown	= {}
 AutoSkillCooldown[S_ILLUSION_OF_CLAWS]=0
+AutoSkillCooldown[S_ILLUSION_CRUSHER]=0
 AutoSkillCooldown[S_CHAOTIC_HEAL]=0
 AutoSkillCooldown[S_WARM_DEF]=0
 AutoSkillCooldown[S_BODY_DOUBLE]=0
@@ -569,8 +571,9 @@ function	OnCHASE_ST ()
 		DoAutoBuffs(2)
 	end
 	if (UseAttackSkill == 1) then
-		MySkill,MySkillLevel=GetAtkSkill(MyID)
-		-- TraceAI("OnCHASE_ST MySkill: " .. MySkill)
+		if (MySkill == 0 and MySkillLevel == 0) then
+			MySkill,MySkillLevel=GetAtkSkill(MyID)
+		end
 	end
 	if true==IsOutOfSight(MyID,MyEnemy) then
 		value="true "
@@ -933,11 +936,6 @@ function OnATTACK_ST ()
 		MyAttackStanceX,MyAttackStanceY=x,y
 		logappend("AAI_DANCE","Attack Stance set to "..MyDestX..","..MyDestY.." current pos: "..x..","..y)
 	end
-	if (UseAutoPushback > 0) then
-		if DoAutoPushback(MyID)  == nil then
-			return
-		end
-	end
 	OnAttackStart()
 	local tact_skill,tact_debuff,tact_sp,tact_skillclass=GetTact(TACT_SKILL,MyEnemy),GetTact(TACT_DEBUFF,MyEnemy),GetTact(TACT_SP,MyEnemy),GetTact(TACT_SKILLCLASS,MyEnemy)
 	local skill_level
@@ -988,7 +986,6 @@ function OnATTACK_ST ()
 	-- First digit (1): -1 = no skill, 0 single target, 1 debuff, 2 mob
 	-- Second digit (2): skill id
 	-- Third digit (3): skill level
-	
 	if (1==1) then --non paniced attack
 		if (MySkill==0 and UseAttackSkill == 1 and GetTick() >= AutoSkillTimeout) then	
 			if (tact_skill < 0) then		-- Negative value of TACT_SKILL -> 1 cast of skill
@@ -1018,7 +1015,7 @@ function OnATTACK_ST ()
 								mobmode=1
 							end
 							mobskillcount=GetMobCount(v[2],math.min(v[3],mobskill_level),MyEnemy,mobmode)
-							-- TraceAI2("Attack -> mobskillcount="..mobskillcount.."tact_skillclass="..tact_skillclass.."class_mob="..CLASS_MOB.."AutoMobCount="..AutoMobCount.." "..FormatSkill(v[2],math.min(v[3],mobskill_level)))
+							-- TraceAI("Attack -> mobskillcount="..mobskillcount.."tact_skillclass="..tact_skillclass.."class_mob="..CLASS_MOB.."AutoMobCount="..AutoMobCount.." "..FormatSkill(v[2],math.min(v[3],mobskill_level)))
 							if (mobskillcount >= AutoMobCount or tact_skillclass == CLASS_MOB) then
 								if (availsp >= GetSkillInfo(v[2],3,math.min(v[3],mobskill_level)))then
 									if (skilltouse[1] < 2) then
@@ -2379,52 +2376,6 @@ function GetIdleWalkDest(MyID)
 		return GetV(V_POSITION,MyID)
 	end
 end
---######################
---### DoAutoPushback ###
---######################
-
-function DoAutoPushback(myid)
-	local actors = GetActors()
-	local x,y=GetV(V_POSITION,myid)
-	for i,v in ipairs(actors) do
-		if (IsMonster(v)==1) then
-			local tact= GetTact(TACT_PUSHBACK,v)
-			local target =GetV(V_TARGET,v)
-			if (tact==2 or (tact==1 and IsFriendOrSelf(target)==1))then				
-				TraceAI("Pushback: "..GetDistanceA(target,v))
-				if (GetDistanceA(target,v) <= AutoPushbackThreshold and GetDistanceA(target,v)~=-1) then
-					TraceAI("Enemies close to me, using pushback")
-					local skill,level=GetPushbackSkill(MyID)
-					if (skill<=0) then
-						UseAutoPushback=0
-					elseif (GetV(V_SP,myid) >= GetSkillInfo(skill,3,level) and GetV(V_SKILLATTACKRANGE,MyID,skill) >= GetDistanceA(myid,v)) then
-						DoSkill(skill,level,v)
-						return
-					end
-					break
-				end
-			end
-		elseif (IsFriendOrSelf(id)==0 and PVPmode ~=0) then
-			local tact= GetPVPTact(TACT_PUSHBACK,v)
-			local target =GetV(V_TARGET,v)
-			if (tact==2 or (tact==1 and IsFriendOrSelf(target)==1))then
-				if (GetDistanceA(target,v) <= AutoPushbackThreshold) then
-					TraceAI("Enemies close to me, using pushback")
-					local skill,level=GetPushbackSkill(MyID)
-					if (skill<=0) then
-						UseAutoPushback=0
-					elseif (GetV(V_SP,myid) >= GetSkillInfo(skill,3,level)) then
-						DoSkill(skill,level,v)
-						return
-					end
-					break
-				end
-			end
-		end
-	end
-	return 1
-end
-
 
 --####################
 --### DoKiteAdjust ###
