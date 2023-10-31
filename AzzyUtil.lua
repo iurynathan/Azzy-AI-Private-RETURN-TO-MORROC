@@ -6,10 +6,6 @@
 -- Written by Dr. Azzy of iRO Chaos
 AUVersion="1.6"
 -------------------------------
-
-
-
-
 --[[
 USAGE NOTES
 
@@ -696,53 +692,6 @@ function IsHomun(myid)
 
 end
 
-function GetMerType(myid)
-	local merctype=GetV(V_MERTYPE,myid)
-	TraceAI("Merc is homun?"..IsHomun(myid))
-	if (merctype~=1) then
-		return merctype
-	elseif merctype > 30 then
-		logappend("AAI_ERROR","Invalid merctype reported"..merctype)
-		return merctype
-	else
-		mhp=GetV(V_MAXHP,myid)
-		msp=GetV(V_MAXSP,myid)
-		if (mhp > 250 and mhp < 333 and msp >= 200 and 250 >= msp ) then -- it's an archer 1
-			return ARCHER01
-		elseif (mhp == 7513 and msp == 201) then 
-			TraceAI("Newly summoned Pengineer")
-			return PENGINEER
-		elseif (mhp >= 4000 and 5000 >= mhp and msp >= 50 and msp < 65 ) then -- looks like a kitty!
-			TraceAI("Wild Rose")
-			return WILDROSE
-		elseif (mhp >= 7513 and 8500 >= mhp and msp >= 201 and msp < 250 ) then 
-			TraceAI("Pengineer")
-			return PENGINEER
-		elseif (mhp >= 7200 and 7512 >= mhp and msp >= 200 and msp < 250 ) then -- looks like a dopple!
-			TraceAI("Dopple Merc")
-			return DOPPLEMERC
-		elseif (mhp >= 10000 and 13000 >= mhp and msp >= 220 and msp < 300 ) then -- looks like alice!
-			TraceAI("Alice")
-			return ALICE
-		elseif	(mhp >= 6100 and 7200 >= mhp and msp >= 180 and msp < 250 ) then -- looks like a mimic!
-			TraceAI("Mimic")
-			return MIMIC
-		elseif (mhp >= 7500 and 9500 >= mhp and msp >= 180 and msp < 220 ) then -- looks like a disguise!
-			TraceAI("Disguise")
-			return DISGUISE
-		elseif (mhp >= 7000 and 8500 >= mhp and msp >= 250 and msp < 320 ) then -- looks like a male GM mercenary!
-			TraceAI("GM Mercenary")
-			return GMMALE
-		elseif (mhp > 12300 and 14500 >= mhp and msp >= 450 and msp < 600 ) then -- Nice stats, must be one of them overpowerd isis mercs
-			TraceAI("ISIS Mercenary")
-			return ISIS
-		else
-			TraceAI("Unknown merc type. Contact the developer ASAP.") 
-			return UNKNOWNMER
-		end
-	end
-end
-
 function IsNotKS(myid,target)
 	--TraceAI("Checking for KS:"..target)
 	local targettarget=GetV(V_TARGET,target)
@@ -1251,17 +1200,7 @@ function AttackRange(myid,skill,level)
 	end
 	local a     = 0
 	if (skill == 0) then
-		mertype=GetMerType(myid)
-		if (mertype==nil) then
-			mertype=-1
-		end
-		if (mertype == -1) then
-			a     = 1
-		elseif (mertype > 10 and mertype < 21) then
-			a     = 2 --spear mercenary
-		else
-			a     = GetV(V_ATTACKRANGE,myid)
-		end
+		a     = GetV(V_ATTACKRANGE,myid)
 	else
 		a = GetSkillInfo(skill,2,level)
 		if a==nil then

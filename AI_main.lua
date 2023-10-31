@@ -21,9 +21,6 @@ AutoSkillCooldown[S_ILLUSION_OF_BREATH]=0
 
 function doInit(myid)
 	local logstring="Checking config..."
-	if IsHomun(myid) == 0 then -- if the stupid devs made GetV(V_MERTYPE,id) work i wouldnt need this!
-		MercType=GetMerType(myid)
-	end
 	if (UseAttackSkill==0 and UseSkillOnly==1) then
 		UseSkillOnly = 0
 		logstring=logstring.."\nUseAttackSkill==0, but UseSkillOnly==1. This will break the AI. UseSkillOnly set to 0. "
