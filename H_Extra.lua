@@ -8,13 +8,16 @@ MyRoute={{0,0}}
 
 --To use "Illusion of Light," I always leave the "illusionOfBreathLevel" value as 0 so that it prioritizes "Illusion of Light." Otherwise, it will use "Illusion of Breath."
 illusionOfLightLevel = 0
-illusionOfBreathLevel = 0
+illusionOfBreathLevel = 10
 --To use "Illusion of Crusher," I always leave the "illusionOfClawsLevel" value as 0 so that it prioritizes "Illusion of Crusher." Otherwise, it will use "Illusion of Claws."
 illusionOfCrusherLevel = 0
 illusionOfClawsLevel = 5
 chaoticHealLevel = 5
 bodyDoubleLevel = 5
-warmDefLevel = 5
+warmDefLevel = 0
+
+-- Attention, when activating the 'onlyAOE = 1' option, it will only use "Illusion of Light," so keep in mind that your 'KIMI' needs to have the skill level and the proper devotion for it to work.
+onlyAOE = 0
 
 healConditions = {
 	[FOLLOW_ST] = 1,

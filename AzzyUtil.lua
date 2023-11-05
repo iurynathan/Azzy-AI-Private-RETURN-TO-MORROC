@@ -1665,69 +1665,82 @@ function GetAtkSkill(myid)
 		homunculuType = GetV(V_HOMUNTYPE,myid)
 		local aggro = GetAggroCount()
 
-		if (homunculuType == OCCULT) then
-			if (illusionOfBreathLevel > 0) then
-				skill = S_ILLUSION_OF_BREATH
+		if (onlyAOE == 1 and illusionOfLightLevel > 0) then
+			skill = S_ILLUSION_OF_LIGHT
 
-				if (GetTick() < AutoSkillCooldown[skill]) then
-					level = 0
-					skill = 0
-				elseif (illusionOfBreathLevel == nil) then
-					level = 10
-				else
-					level = illusionOfBreathLevel
-				end
-			elseif (illusionOfLightLevel > 0) then
-				skill = S_ILLUSION_OF_LIGHT
-
-				if (GetTick() < AutoSkillCooldown[skill]) then
-					level = 0
-					skill = 0
-				elseif (illusionOfLightLevel == nil) then
-					level = 10
-				else
-					level = illusionOfLightLevel
-				end
-			end
-
-			if (aggro >= AutoMobCount and illusionOfLightLevel > 0) then
-				skill = S_ILLUSION_OF_LIGHT
-
-				if (GetTick() < AutoSkillCooldown[skill]) then
-					level = 0
-					skill = 0
-				elseif (illusionOfLightLevel == nil) then
-					level = 10
-				else
-					level = illusionOfLightLevel
-				end
+			if (GetTick() < AutoSkillCooldown[skill]) then
+				level = 0
+				skill = 0
+			elseif (illusionOfLightLevel == nil) then
+				level = 10
+			else
+				level = illusionOfLightLevel
 			end
 		else
-			if (illusionOfClawsLevel > 0) then
-				skill = S_ILLUSION_OF_CLAWS
+			if (homunculuType == OCCULT) then
+				if (illusionOfBreathLevel > 0) then
+					skill = S_ILLUSION_OF_BREATH
 
-				if (illusionOfClawsLevel == 0) then
-					level = 0
-				elseif (GetTick() < AutoSkillCooldown[skill]) then
-					level = 0
-					skill = 0
-				elseif (illusionOfClawsLevel == nil) then
-					level = 5
-				else
-					level = illusionOfClawsLevel
+					if (GetTick() < AutoSkillCooldown[skill]) then
+						level = 0
+						skill = 0
+					elseif (illusionOfBreathLevel == nil) then
+						level = 10
+					else
+						level = illusionOfBreathLevel
+					end
+				elseif (illusionOfLightLevel > 0) then
+					skill = S_ILLUSION_OF_LIGHT
+
+					if (GetTick() < AutoSkillCooldown[skill]) then
+						level = 0
+						skill = 0
+					elseif (illusionOfLightLevel == nil) then
+						level = 10
+					else
+						level = illusionOfLightLevel
+					end
+				end
+
+				if (aggro >= AutoMobCount and illusionOfLightLevel > 0) then
+					skill = S_ILLUSION_OF_LIGHT
+
+					if (GetTick() < AutoSkillCooldown[skill]) then
+						level = 0
+						skill = 0
+					elseif (illusionOfLightLevel == nil) then
+						level = 10
+					else
+						level = illusionOfLightLevel
+					end
 				end
 			else
-				skill = S_ILLUSION_CRUSHER
+				if (illusionOfClawsLevel > 0) then
+					skill = S_ILLUSION_OF_CLAWS
 
-				if (illusionOfCrusherLevel == 0) then
-					level = 0
-				elseif (GetTick() < AutoSkillCooldown[skill]) then
-					level = 0
-					skill = 0
-				elseif (illusionOfCrusherLevel == nil) then
-					level = 5
+					if (illusionOfClawsLevel == 0) then
+						level = 0
+					elseif (GetTick() < AutoSkillCooldown[skill]) then
+						level = 0
+						skill = 0
+					elseif (illusionOfClawsLevel == nil) then
+						level = 5
+					else
+						level = illusionOfClawsLevel
+					end
 				else
-					level = illusionOfCrusherLevel
+					skill = S_ILLUSION_CRUSHER
+
+					if (illusionOfCrusherLevel == 0) then
+						level = 0
+					elseif (GetTick() < AutoSkillCooldown[skill]) then
+						level = 0
+						skill = 0
+					elseif (illusionOfCrusherLevel == nil) then
+						level = 5
+					else
+						level = illusionOfCrusherLevel
+					end
 				end
 			end
 		end

@@ -112,7 +112,7 @@ SkillInfo[S_WARM_DEF] = {
   {4100,4100,4100,4100,4100}, -- [6] Delay (ms)
   0, -- [7] Target mode (0 = self targeted, 1 = enemy targeted, 2 = ground targeted) 
   {2000,4000,6000,8000,10000}, -- [8] Duration (ms)
-  {8000,8000,8000,8000,8000}, -- [9] Reuse Delay (ms)
+  {8350,8350,8350,8350,8350}, -- [9] Reuse Delay (ms)
 }
 
 SkillInfo[S_CHAOTIC_HEAL] = {
